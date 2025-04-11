@@ -79,7 +79,7 @@ const RestaurantSchema: Schema = new Schema({
             type: String
         }
     }
-})
+},{timestamps:true})
 
 const restaurantModel = mongoose.model<RestaurantInterface>('Restaurant', RestaurantSchema)
 export default restaurantModel

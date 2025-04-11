@@ -1,4 +1,5 @@
 import RegistartionController from '../controller/registrationController';
+import RestaurantMenuController from '../controller/restaurntMenuItemController';
 import LoginController from '../controller/loginController';
 import RestaurantDisplayController from '../controller/restaurantDisplayController';
 import rabbitClient from './client'
@@ -6,6 +7,7 @@ import rabbitClient from './client'
 const registartionController = new RegistartionController()
 const loginController = new LoginController()
 const adminController = new RestaurantDisplayController()
+const menuController=new RestaurantMenuController()
 
 export default class MessageHandler {
     static async handle(
@@ -77,6 +79,16 @@ export default class MessageHandler {
             case 'Restaurant-Documents-Re-Submission':
                 console.log('reach on Restaurant-Documents-Re-Submission case');
                 response = await registartionController.resubmitRestaurantDocuments(data)
+                break;
+
+            case  'Restaurant-add-menu-item':
+                console.log('reach on  Restaurant-add-menu-item case');
+                response = await menuController.addMenuItems(data)
+                break;
+
+            case  'Get-All-Variants':
+                console.log('reach on  Get-All-Variants case');
+                response = await menuController.getAllVariants(data)
                 break;
 
             default:

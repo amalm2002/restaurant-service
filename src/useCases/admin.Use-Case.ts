@@ -9,7 +9,7 @@ export default class adminUseCase {
   
   getAllRestaurantDatas = async (data: any) => {
     try {
-      const response = await adminRepo.getAllRestaurnt(data);      
+      const response = await adminRepo.getAllRestaurnt(data);            
       return { message: 'success', response: response };
     } catch (error) {
       return { message: (error as Error).message };

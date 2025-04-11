@@ -1,7 +1,6 @@
-import Restaurant, { RestaurantInterface } from '../entities/restaurant'
+import Restaurant,{ RestaurantInterface } from '../entities/restaurant'
 import { Registration } from '../utilities/interface'
 import mongoose from "mongoose";
-
 
 export default class restaurantRepositery {
 
