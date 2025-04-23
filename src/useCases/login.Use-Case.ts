@@ -1,25 +1,22 @@
-import restaurantRepositery from "../repositeries/restaurantRepo";
-import { RestaurantInterface } from '../entities/restaurant'
+import RestaurantRepository from "../repositeries/restaurantRepo";
+import { RestaurantInterface } from '../entities/restaurant';
 import { AuthService } from "../services/auth";
 
-// const restaurantRepo = new restaurantRepositery()
+export class LoginUseCase {
+    private restaurantRepo: RestaurantRepository;
+    private auth: AuthService;
 
-export default class loginUseCase {
-
-    private restaurantRepo: restaurantRepositery;
-    private auth: AuthService
-
-    constructor(restaurantRepo: restaurantRepositery, authService: AuthService) {
-        this.restaurantRepo = restaurantRepo
-        this.auth = authService
+    constructor(restaurantRepo: RestaurantRepository, authService: AuthService) {
+        this.restaurantRepo = restaurantRepo;
+        this.auth = authService;
     }
 
     private async handleLogin(restaurant: RestaurantInterface) {
+        const role = 'Restaurant';
+        const token = await this.auth.createToken(restaurant._id.toString(), '15m', 'Restaurant');
+        const refreshToken = await this.auth.createToken(restaurant._id.toString(), '7d', 'Restaurant');
 
-        const token = await this.auth.createToken(restaurant._id.toString(), '15m')
-        const refreshToken = await this.auth.createToken(restaurant._id.toString(), '7d')
-
-        const isRejected = restaurant.rejectionReason ? true : false
+        const isRejected = restaurant.rejectionReason ? true : false;
 
         return {
             message: 'Success',
@@ -30,26 +27,44 @@ export default class loginUseCase {
             isOnline: restaurant.isOnline,
             isVerified: restaurant.isVerified,
             refreshToken: refreshToken,
-            isRejected:isRejected,
-            restaurant:restaurant
-        }
+            isRejected: isRejected,
+            restaurant: restaurant,
+            role: role
+        };
     }
 
     loginCheckRestaurant = async (email: string, mobile: number) => {
         try {
-            const response = await this.restaurantRepo.findRestauarnt(email, mobile) as RestaurantInterface
-            if (response === null) {
-                return { message: 'No restaurant found' }
-            } else {
-                return this.handleLogin(response)
-            }
+            const response = await this.restaurantRepo.findRestauarnt(email, mobile) as RestaurantInterface;
 
+            // if (response === null) {
+            //     return { message: 'No restaurant found' };
+            // } else {
+            //     return this.handleLogin(response);
+            // }
+
+            if (!response) {
+                return { message: 'No restaurant found' };
+            }
+            
+            const docEntries = Object.entries(response.restaurantDocuments || {});
+            const locEntries = Object.entries(response.location || {});
+    
+            const incompleteDoc = docEntries.find(([key, value]) => value === undefined || value === null);
+            const incompleteLoc = locEntries.find(([key, value]) => value === undefined || value === null);
+    
+            if (incompleteDoc||incompleteLoc) {
+                return { message: `Restaurant registration is pending ` };
+            }
+    
+           
+            return this.handleLogin(response);
 
         } catch (error) {
             console.log('error on restaurant login-use-case side :', error);
-
+            throw error;
         }
-    }
+    };
 
     updateOnlineStatus = async (restaurantId: string, isOnline: boolean) => {
         try {
@@ -70,4 +85,16 @@ export default class loginUseCase {
             throw error;
         }
     };
+
+    fetchOnlineStatus=async (restaurantId:string) => {
+        try {
+            const response =await this.restaurantRepo.fetchOnlineStatus(restaurantId)
+            return response
+        } catch (error) {
+            console.log('error on fetch online status on login use-case side');
+            throw error
+        }
+    }
 }
+
+export default LoginUseCase;

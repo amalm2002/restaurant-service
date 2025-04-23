@@ -1,52 +1,51 @@
-import restaurantRepositery from "../repositeries/restaurantRepo";
 import { RestaurantInterface } from "../entities/restaurant";
 import { Registration } from "../utilities/interface";
+import RestaurantRepository from "../repositeries/restaurantRepo";
 
+export default class RegistrationUseCase {
+    private restaurantRepo: RestaurantRepository;
 
-const restaurantRepo = new restaurantRepositery()
-
-export default class registrationUseCase {
+    constructor(restaurantRepo: RestaurantRepository) {
+        this.restaurantRepo = restaurantRepo;
+    }
 
     register = async (Registration: Registration) => {
         try {
-
-            const { restaurantName, email, mobile } = Registration
+            const { restaurantName, email, mobile } = Registration;
 
             const newRestaurant = {
                 restaurantName,
                 email,
                 mobile
-            }
+            };
 
-            const response = await restaurantRepo.saveRestaurant(newRestaurant)
+            const response = await this.restaurantRepo.saveRestaurant(newRestaurant);
 
             if (typeof response !== 'string' && response.email) {
-                return { message: 'Success', restaurant_id: response._id }
+                return { message: 'Success', restaurant_id: response._id };
             }
 
-            return response
-
+            return response;
         } catch (error) {
-            console.log('error on restaurant registartion useCase side :', error);
-            return { message: (error as Error).message }
+            console.log('error on restaurant registration useCase side :', error);
+            return { message: (error as Error).message };
         }
-    }
+    };
 
     checkRestaurant = async (email: string, mobile: number) => {
         try {
-            const response = await restaurantRepo.findRestauarnt(email, mobile) as RestaurantInterface
+            const response = await this.restaurantRepo.findRestauarnt(email, mobile) as RestaurantInterface;
 
             if (response) {
+                const documents = Object.values(response.restaurantDocuments).every(value => !value);
+                const location = Object.values(response.location).every(value => !value);
 
-                const documents= Object.values(response.restaurantDocuments).every(value => !value);
-                 const location= Object.values(response.location).every(value => !value);
-                    
                 if (documents) {
                     return {
                         message: 'Document is missing please upload',
                         restaurant: response
                     };
-                }else if (location) {
+                } else if (location) {
                     return {
                         message: 'Please select your location',
                         restaurant: response
@@ -57,37 +56,31 @@ export default class registrationUseCase {
                         restaurant: response
                     };
                 }
-
             }
 
             return { message: 'restaurant not registered' };
-
-
-
         } catch (error) {
-            return { message: (error as Error).message }
+            return { message: (error as Error).message };
         }
-    }
+    };
 
     restaurantDocumentUpdate = async (restaurantDoc: any) => {
         try {
-
-            const response = await restaurantRepo.restaurantDocumentsUpdate(restaurantDoc)
+            const response = await this.restaurantRepo.restaurantDocumentsUpdate(restaurantDoc);
             if (response) {
-                return ({ message: 'Success', restaurntResponse: response })
+                return { message: 'Success', restaurntResponse: response };
             } else {
-                return ({ message: 'Somthing went wrong' })
+                return { message: 'Something went wrong' };
             }
-
         } catch (error) {
-            return { message: (error as Error).message }
+            return { message: (error as Error).message };
         }
-    }
+    };
 
     restaurantLocationUpdation = async (locationData: any) => {
         try {
-            const result = await restaurantRepo.restaurantLocationUpdate(locationData);
-            
+            const result = await this.restaurantRepo.restaurantLocationUpdate(locationData);
+
             if (!result.success) {
                 return {
                     success: false,
@@ -100,7 +93,6 @@ export default class registrationUseCase {
                 message: 'Location updated successfully',
                 data: result.data
             };
-
         } catch (error) {
             return {
                 success: false,
@@ -109,14 +101,12 @@ export default class registrationUseCase {
         }
     };
 
-    resubmitDocuments=async(resubmitDocs:any)=>{
+    resubmitDocuments = async (resubmitDocs: any) => {
         try {
-            const response =await restaurantRepo.resubmitRestaurantDocuments(resubmitDocs)
-            return {message:'success',response:response}
-            
+            const response = await this.restaurantRepo.resubmitRestaurantDocuments(resubmitDocs);
+            return { message: 'success', response: response };
         } catch (error) {
-            return { message: (error as Error).message }
+            return { message: (error as Error).message };
         }
-    }
-
+    };
 }

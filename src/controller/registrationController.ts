@@ -3,10 +3,14 @@ import { Registration } from "../utilities/interface";
 import { sendOtp } from "../utilities/otpSending";
 import { AuthService } from "../services/auth";
 
+export default class RegistrationController {
+    private registrationUseCase: RegistrationUseCase;
+    private authService: AuthService;
 
-const registrationUseCase = new RegistrationUseCase()
-
-export default class registartionController {
+    constructor(registrationUseCase: RegistrationUseCase, authService: AuthService) {
+        this.registrationUseCase = registrationUseCase;
+        this.authService = authService;
+    }
 
     register = async (data: Registration) => {
         const { restaurantName, email, mobile, otp, otpToken } = { ...data };
@@ -14,8 +18,8 @@ export default class registartionController {
         if (!otp || !otpToken) {
             return { error: "OTP and OTP Token are required." };
         }
-        const authService = new AuthService();
-        const decodedToken = authService.verifyOption(otpToken);
+
+        const decodedToken = this.authService.verifyOption(otpToken);
 
         if (!decodedToken || "message" in decodedToken || !decodedToken.clientId) {
             return { error: "Invalid OTP Token" };
@@ -23,13 +27,15 @@ export default class registartionController {
         if (decodedToken.clientId !== otp) {
             return { error: "Invalid OTP. Please try again." };
         }
+
         const restaurantData = {
             restaurantName,
             email,
             mobile
         };
+
         try {
-            const response = await registrationUseCase.register(restaurantData);
+            const response = await this.registrationUseCase.register(restaurantData);
             return response;
         } catch (error) {
             return { error: (error as Error).message };
@@ -37,43 +43,38 @@ export default class registartionController {
     };
 
     checkRestaurant = async (data: { email: string, mobile: number }) => {
-        const { email, mobile } = data
+        const { email, mobile } = data;
 
         try {
-
-            const response = await registrationUseCase.checkRestaurant(email, mobile)
+            const response = await this.registrationUseCase.checkRestaurant(email, mobile);
 
             if (response.message === 'restaurant not registered') {
-                const token = await sendOtp(email)
-                console.log('OTP Sent:', token)
+                const token = await sendOtp(email);
+                console.log('OTP Sent:', token);
                 return { ...response, otpToken: token };
             }
 
-            return response
-
+            return response;
         } catch (error) {
-            return ({ error: (error as Error).message })
+            return { error: (error as Error).message };
         }
-    }
+    };
 
     restaurantResendOtp = async (data: any) => {
-        const { email, mobile } = data
+        const { email, mobile } = data;
         try {
-            const response = await registrationUseCase.checkRestaurant(email, mobile)
-            const token = await sendOtp(email)
+            const response = await this.registrationUseCase.checkRestaurant(email, mobile);
+            const token = await sendOtp(email);
             console.log('RESEND OTP SEND :', token);
-            return { ...response, otpToken: token }
-
+            return { ...response, otpToken: token };
         } catch (error) {
-            return ({ error: (error as Error).message })
+            return { error: (error as Error).message };
         }
-
-    }
+    };
 
     restaurantDocumentUpdate = async (data: any) => {
         try {
-            const { restaurant_id, idProofUrl, fssaiLicenseUrl, businessCertificateUrl, bankAccountNumber,
-                ifscCode } = data
+            const { restaurant_id, idProofUrl, fssaiLicenseUrl, businessCertificateUrl, bankAccountNumber, ifscCode } = data;
 
             const restaurantDoc = {
                 restaurant_id,
@@ -82,38 +83,34 @@ export default class registartionController {
                 businessCertificateUrl,
                 bankAccountNumber,
                 ifscCode
-            }
+            };
 
-            const response = await registrationUseCase.restaurantDocumentUpdate(restaurantDoc)
-            return (response)
-
+            const response = await this.registrationUseCase.restaurantDocumentUpdate(restaurantDoc);
+            return response;
         } catch (error) {
-            return ({ error: (error as Error).message })
+            return { error: (error as Error).message };
         }
-    }
+    };
 
     restaurantLocation = async (data: any) => {
         try {
-
-            const { latitude, longitude, restaurantId } = data
+            const { latitude, longitude, restaurantId } = data;
             const locationData = {
                 latitude,
                 longitude,
                 restaurantId
-            }
+            };
 
-            const response = await registrationUseCase.restaurantLocationUpdation(locationData)
-
-            return (response)
+            const response = await this.registrationUseCase.restaurantLocationUpdation(locationData);
+            return response;
         } catch (error) {
-            return ({ error: (error as Error).message })
+            return { error: (error as Error).message };
         }
-    }
+    };
 
     resubmitRestaurantDocuments = async (data: any) => {
         try {
-            const { restaurantId, idProof, fssaiLicense, businessCertificate, bankAccountNumber,
-                ifscCode } = data
+            const { restaurantId, idProof, fssaiLicense, businessCertificate, bankAccountNumber, ifscCode } = data;
 
             const resubmitData = {
                 restaurantId,
@@ -122,14 +119,12 @@ export default class registartionController {
                 businessCertificate,
                 bankAccountNumber,
                 ifscCode
-            }
+            };
 
-            const response = await registrationUseCase.resubmitDocuments(resubmitData)
-            return response
-
+            const response = await this.registrationUseCase.resubmitDocuments(resubmitData);
+            return response;
         } catch (error) {
-            return ({ error: (error as Error).message })
+            return { error: (error as Error).message };
         }
-    }
-
+    };
 }

@@ -37,6 +37,7 @@ export interface VariantInput {
     quantity: number;
     images: string[]; 
     hasVariants: boolean;
+    isActive:boolean;
     variants?: VariantInput[];
     timing?: 'daily' | 'afternoon' | 'evening';
   }

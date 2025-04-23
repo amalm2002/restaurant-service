@@ -16,6 +16,7 @@ export interface MenuItemInterface extends Document {
     quantity: number;
     images: string[];
     hasVariants: boolean;
+    isActive:boolean;
     variants: Variant[];
     timing?: 'daily' | 'afternoon' | 'evening';
     createdAt: Date;
@@ -67,6 +68,10 @@ const MenuItemSchema = new Schema<MenuItemInterface>({
     hasVariants: {
         type: Boolean,
         default: false
+    },
+    isActive:{
+        type:Boolean,
+        default:true
     },
     variants: {
         type: [VariantSchema],

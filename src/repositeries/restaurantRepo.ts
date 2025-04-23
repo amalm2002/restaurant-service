@@ -51,6 +51,20 @@ export default class restaurantRepositery {
         }
     };
 
+    fetchOnlineStatus = async (restaurantId: string): Promise<{ isOnline: boolean } | string> => {
+        try {
+            const restaurant = await Restaurant.findById(restaurantId, 'isOnline');
+            if (!restaurant) {
+                return 'Restaurant not found';
+            }
+            return { isOnline: restaurant.isOnline };
+        } catch (error) {
+            console.log('Error fetch online status in repo:', error);
+            return (error as Error).message;
+        }
+    }
+    
+
     restaurantDocumentsUpdate = async (restaurantDoc: any) => {
         try {
             const response = await Restaurant.findByIdAndUpdate(
