@@ -3,23 +3,27 @@ import RestaurantMenuController from '../controller/restaurntMenuItemController'
 import LoginController from '../controller/loginController';
 import RestaurantDisplayController from '../controller/restaurantDisplayController';
 import rabbitClient from './client';
+import SubscriptionPlanController from '../controller/subscriptionPlanController';
 
 export default class MessageHandler {
     private registrationController: RegistrationController;
     private loginController: LoginController;
     private adminController: RestaurantDisplayController;
     private menuController: RestaurantMenuController;
+    private subscriptionPlanController: SubscriptionPlanController;
 
     constructor(
         registrationController: RegistrationController,
         loginController: LoginController,
         adminController: RestaurantDisplayController,
-        menuController: RestaurantMenuController
+        menuController: RestaurantMenuController,
+        subscriptionPlanController: SubscriptionPlanController
     ) {
         this.registrationController = registrationController;
         this.loginController = loginController;
         this.adminController = adminController;
         this.menuController = menuController;
+        this.subscriptionPlanController = subscriptionPlanController;
     }
 
     static async handle(
@@ -31,10 +35,11 @@ export default class MessageHandler {
             registrationController: RegistrationController,
             loginController: LoginController,
             adminController: RestaurantDisplayController,
-            menuController: RestaurantMenuController
+            menuController: RestaurantMenuController,
+            subscriptionPlanController: SubscriptionPlanController
         }
     ) {
-        const { registrationController, loginController, adminController, menuController } = controllers;
+        const { registrationController, loginController, adminController, menuController, subscriptionPlanController } = controllers;
         let response = data;
 
         console.log('the operation is ', operation, data);
@@ -140,15 +145,39 @@ export default class MessageHandler {
                 response = await menuController.getAllRestaurantMenus(data);
                 break;
 
-            case 'Get-All-Restaurant-Dishes':
-                console.log('reach on Get-All-Restaurant-Dishes case');
-                response = await menuController.getAllRestaurantDishes(data);
-                break;
+            // case 'Get-All-Restaurant-Dishes':
+            //     console.log('reach on Get-All-Restaurant-Dishes case');
+            //     response = await menuController.getAllRestaurantDishes(data);
+            //     break;
 
             case 'Sort-Menu-Items':
                 console.log('reach on Sort-Menu-Items case');
                 response = await menuController.sortAllMenus(data);
                 break;
+
+            case 'Add-New-Subscription':
+                console.log('reach on Add-New-Subscription case');
+                response = await subscriptionPlanController.addNewSubScriptionPlan(data);
+                break;
+
+            case 'Get-All-Subscription-Plan':
+                console.log('reach on Get-All-Subscription-Plan case');
+                response = await subscriptionPlanController.getAllSubScriptionPlan(data);
+                break;
+
+            case 'Edit-Subscription-Plan':
+                console.log('reach on Edit-Subscription-Plan case');
+                response = await subscriptionPlanController.editSubScriptionPlan(data);
+                break;
+            case 'Delete-SubScription-Plan':
+                console.log('reach on Delete-SubScription-Plan case');
+                response = await subscriptionPlanController.deleteSubScriptionPlan(data);
+                break;
+
+            // case 'Get-All-Subscription-Plan':
+            //     console.log('reach on Get-All-Subscription-Plan case');
+                // response = await subscriptionPlanController.getAllSubScriptionPlan(data);
+                // break;
 
             default:
                 response = 'request-key not-found';

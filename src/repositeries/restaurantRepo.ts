@@ -62,8 +62,7 @@ export default class restaurantRepositery {
             console.log('Error fetch online status in repo:', error);
             return (error as Error).message;
         }
-    }
-    
+    }  
 
     restaurantDocumentsUpdate = async (restaurantDoc: any) => {
         try {

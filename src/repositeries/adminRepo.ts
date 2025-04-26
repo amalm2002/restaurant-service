@@ -25,6 +25,7 @@ export default class adminRepositery {
       return (error as Error).message
     }
   }
+  
   verifyRestaurantDocuments = async (restaurantId: string) => {
     try {
       if (!mongoose.Types.ObjectId.isValid(restaurantId)) {

@@ -70,18 +70,19 @@ export default class RestaurantMenuController {
         }
     };
 
-    getAllRestaurantDishes = async (data: any) => {
-        try {
-            const result = await this.addMenuUseCase.getAllRestaurantDishes(data);
-            return result;
-        } catch (error) {
-            return { error: (error as Error).message };
-        }
-    };
+    // getAllRestaurantDishes = async (data: any) => {
+    //     try {
+    //         const result = await this.addMenuUseCase.getAllRestaurantDishes(data);
+    //         return result;
+    //     } catch (error) {
+    //         return { error: (error as Error).message };
+    //     }
+    // };
 
     sortAllMenus = async (data: any) => {
         try {
-
+            const result = await this.addMenuUseCase.sortAllMenus(data)
+            return result
         } catch (error) {
 
         }

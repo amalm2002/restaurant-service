@@ -71,13 +71,27 @@ export default class RestaurntMenuItemUseCase {
             return { error: (error as Error).message };
         }
     };
-    
-    getAllRestaurantDishes = async (data: any) => {
+
+    // getAllRestaurantDishes = async (data: any) => {
+    //     try {
+    //         const result = await this.restaurantRepo.getAllRestaurantDishes(data);
+    //         return result;
+    //     } catch (error) {
+    //         return { error: (error as Error).message };
+    //     }
+    // };
+
+    sortAllMenus = async (data: { sortValue: string; searchTerm: string; category: string }) => {
         try {
-            const result = await this.restaurantRepo.getAllRestaurantDishes(data);
+            const validSortOptions = ['recommended', 'rating', 'priceLowToHigh', 'priceHighToLow', 'timing'];
+            if (!validSortOptions.includes(data.sortValue)) {
+                throw new Error('Invalid sort option');
+            }
+            const result = await this.restaurantRepo.sortAllMenu(data);
             return result;
         } catch (error) {
+            console.log('Error in sortAllMenus use-case:', error);
             return { error: (error as Error).message };
         }
-    };
+    }
 }

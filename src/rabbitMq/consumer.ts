@@ -12,6 +12,9 @@ import RestaurantRepository from "../repositeries/restaurantRepo";
 import AdminRepository from "../repositeries/adminRepo";
 import MenuRepository from "../repositeries/menuRepo";
 import { AuthService } from "../services/auth";
+import SubscriptionPlanController from "../controller/subscriptionPlanController";
+import SubscriptionPlanRepository from "../repositeries/subscriptionPlanRepo";
+import { SubscriptionPlanUseCase } from "../useCases/subscriptionPlan.Use-Case";
 
 export default class Consumer {
     private channel: Channel;
@@ -21,6 +24,7 @@ export default class Consumer {
         loginController: LoginController;
         adminController: RestaurantDisplayController;
         menuController: RestaurantMenuController;
+        subscriptionPlanController:SubscriptionPlanController
     };
 
     constructor(channel: Channel, rpcQueue: string) {
@@ -32,19 +36,22 @@ export default class Consumer {
         const restaurantRepo = new RestaurantRepository();
         const adminRepo = new AdminRepository();
         const menuRepo = new MenuRepository();
+        const subscriptionPlanRepo=new SubscriptionPlanRepository()
 
         // Initialize use cases
         const loginUseCase = new LoginUseCase(restaurantRepo, authService);
         const registrationUseCase = new RegistrationUseCase(restaurantRepo);
         const adminUseCase = new AdminUseCase(adminRepo);
         const menuUseCase = new RestaurntMenuItemUseCase(menuRepo);
+        const subscriptionPlanUseCase=new SubscriptionPlanUseCase(subscriptionPlanRepo)
 
         // Initialize controllers
         this.controllers = {
             registrationController: new RegistrationController(registrationUseCase, authService),
             loginController: new LoginController(loginUseCase),
             adminController: new RestaurantDisplayController(adminUseCase),
-            menuController: new RestaurantMenuController(menuUseCase)
+            menuController: new RestaurantMenuController(menuUseCase),
+            subscriptionPlanController:new SubscriptionPlanController(subscriptionPlanUseCase)
         };
     }
 
