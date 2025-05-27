@@ -1,9 +1,9 @@
 import {Application} from 'express'
-import connectDB from './config/mongo'
+import connectDB from './config/mongo.config'
 import express from 'express'
 import http from "http";
 import 'dotenv/config'
-import RabbitMQClient from './rabbitMq/client'
+import RabbitMQClient from './messaging/rabbitMq/client'
 
 const PORT=process.env.PORT
 
