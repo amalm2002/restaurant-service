@@ -1,7 +1,7 @@
 
 import { IRestaurantMenuService } from '../interfaces/restaurant-menu.service.interface';
 import { IMenuRepository } from '../../repositories/interfaces/menu.repository.interface';
-import { MenuItemDTO } from '../../dto/menu/menu-item.dto';
+import { CartItemDTO, MenuItemDTO } from '../../dto/menu/menu-item.dto';
 
 export default class RestaurantMenuService implements IRestaurantMenuService {
     private menuRepository: IMenuRepository;
@@ -69,6 +69,22 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
     async sortAllMenus(params: { sortValue: string; searchTerm: string; category: string }) {
         try {
             return await this.menuRepository.sortAllMenu(params);
+        } catch (error) {
+            throw new Error((error as Error).message);
+        }
+    }
+
+    async updateMenuQuantity(data: { cartItems: CartItemDTO[] }): Promise<any> {
+        try {
+            return this.menuRepository.updateMenuQuantity(data)
+        } catch (error) {
+            throw new Error((error as Error).message);
+        }
+    }
+
+    async cancelOrderQuantityUpdations(refundData: { userId: string; restaurantId: string; items: Array<{ foodId: string; quantity: number; }>; }): Promise<{ success: boolean; message: string; error?: string | undefined; }> {
+        try {
+            return this.menuRepository.cancelOrderQuantityUpdations(refundData)
         } catch (error) {
             throw new Error((error as Error).message);
         }

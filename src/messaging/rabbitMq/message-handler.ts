@@ -50,6 +50,9 @@ export default class MessageHandler {
             case 'Fetch-Online-Status':
                 response = await loginController.fetchOnlineStatus(data);
                 break;
+            case 'Get-Restaurant-By-Id':
+                response = await loginController.getRestaurantDataById(data);
+                break;
             case 'Get-All-Restaurants':
                 response = await adminController.getAllRestaurantsData(data);
                 break;
@@ -89,6 +92,12 @@ export default class MessageHandler {
             case 'Sort-Menu-Items':
                 response = await menuController.sortAllMenus(data);
                 break;
+            case 'Update-Menu-Quantity':
+                response = await menuController.updateMenuQuantity(data)
+                break;
+            case 'Update-Menu-Quantity-Cancel-Order':
+                response = await menuController.cancelOrderQuantityUpdation(data)
+                break;
             case 'Add-New-Subscription':
                 response = await subscriptionPlanController.addNewSubscriptionPlan(data);
                 break;
@@ -126,8 +135,6 @@ export default class MessageHandler {
                 response = await subscriptionPlanController.getAllRestaurantPayments(data);
                 break;
 
-            // case 'Add-To-Cart':
-            //     response = await cartController    
             default:
                 response = 'Request key not found';
                 break;

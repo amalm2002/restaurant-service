@@ -13,4 +13,5 @@ export interface IRestaurantRepository {
     restaurantDocumentsUpdate(restaurantDoc: DocumentsDTO): Promise<any>;
     restaurantLocationUpdate(locationData: LocationDTO): Promise<any>;
     resubmitRestaurantDocuments(resubmitDocs: ResubDocsDTO): Promise<RestaurantInterface | string>;
+    getRestaurantDataById(restaurantId: string): Promise<any>;
 }

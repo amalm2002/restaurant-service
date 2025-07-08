@@ -19,3 +19,15 @@ export interface VariantDTO {
     price: number;
     quantity: number;
 }
+
+export interface CartItemDTO {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    quantity: number;
+    image: string;
+    restaurant: string;
+    isVeg: boolean;
+    maxAvailableQty: number;
+}

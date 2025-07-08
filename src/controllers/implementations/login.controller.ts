@@ -37,4 +37,28 @@ export default class LoginController implements ILoginController {
             return { error: (error as Error).message };
         }
     }
+
+    async getRestaurantDataById(data: { restaurantId: string }): Promise<any> {
+        try {
+            const restaurant_id = data.restaurantId;
+            const response = await this.loginService.getRestaurantDataById(restaurant_id);
+
+            if (!response || response.error) {
+                return {
+                    success: false,
+                    message: response?.error || 'Restaurant not found',
+                };
+            }
+
+            return {
+                success: true,
+                data: response,
+            };
+        } catch (error) {
+            return {
+                success: false,
+                message: (error as Error).message,
+            };
+        }
+    }
 }

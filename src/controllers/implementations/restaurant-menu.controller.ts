@@ -1,6 +1,6 @@
 import { IRestaurantMenuController } from '../interfaces/restaurant-menu.controller.interface';
 import { IRestaurantMenuService } from '../../services/interfaces/restaurant-menu.service.interface';
-import { MenuItemDTO } from '../../dto/menu/menu-item.dto';
+import { CartItemDTO, MenuItemDTO } from '../../dto/menu/menu-item.dto';
 
 export default class RestaurantMenuController implements IRestaurantMenuController {
     private menuService: IRestaurantMenuService;
@@ -78,6 +78,24 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
             return result;
         } catch (error) {
             return { error: (error as Error).message };
+        }
+    }
+
+    async updateMenuQuantity(data: { cartItems: CartItemDTO[] }): Promise<any> {
+        try {
+            const result = await this.menuService.updateMenuQuantity(data)
+            return result
+        } catch (error) {
+            return { error: (error as Error).message };
+        }
+    }
+
+    async cancelOrderQuantityUpdation(refundData: { userId: string; restaurantId: string; items: Array<{ foodId: string; quantity: number; }>; }): Promise<{ success: boolean; message: string; error?: string | undefined; }> {
+        try {
+            const result = await this.menuService.cancelOrderQuantityUpdations(refundData)
+            return result
+        } catch (error) {
+            return { success: false, message: 'somthing went wrong', error: (error as Error).message };
         }
     }
 }

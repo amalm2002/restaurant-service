@@ -52,6 +52,9 @@ export default class SubscriptionService implements ISubscriptionService {
             popular,
         });
 
+        console.log('plannnn :',plan);
+        
+
         return plan;
     }
 

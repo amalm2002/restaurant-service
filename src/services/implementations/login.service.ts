@@ -90,4 +90,14 @@ export default class LoginService implements ILoginService {
             throw error;
         }
     }
+
+    async getRestaurantDataById(restaurantId: string): Promise<any> {
+        try {
+            const response =await this.restaurantRepository.getRestaurantDataById(restaurantId)
+            return response
+        } catch (error) {
+             console.log('error on get the restaurnt data by id');
+            throw error;
+        }
+    }
 }

@@ -1,6 +1,6 @@
 
 import { MenuItemInterface } from '../../models/menu.model';
-import { MenuItemDTO } from '../../dto/menu/menu-item.dto';
+import { CartItemDTO, MenuItemDTO } from '../../dto/menu/menu-item.dto';
 
 export interface IMenuRepository {
     createMenuItem(data: MenuItemDTO): Promise<MenuItemInterface>;
@@ -11,4 +11,6 @@ export interface IMenuRepository {
     softDeleteMenu(menuItemId: string): Promise<MenuItemInterface | { message: string }>;
     getRestaurantMenus(data: any): Promise<any[]>;
     sortAllMenu(params: { sortValue: string; searchTerm: string; category: string }): Promise<any[]>;
+    updateMenuQuantity(data: { cartItems: CartItemDTO[] }): Promise<any>
+    cancelOrderQuantityUpdations(refundData: { userId: string, restaurantId: string; items: Array<{ foodId: string; quantity: number }> }): Promise<{ success: boolean, message: string, error?: string | undefined }>
 }
