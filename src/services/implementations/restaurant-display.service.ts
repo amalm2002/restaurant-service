@@ -2,6 +2,11 @@ import { IRestaurantDisplayService } from '../interfaces/restaurant-display.serv
 import { IAdminRepository } from '../../repositories/interfaces/admin.repository.interface';
 import { INodemailerService } from '../interfaces/nodemailer.service.interface';
 import { OtpSendingUtil } from '../../utilities/otp-sending.util';
+import { GetAllRestaurantsResponseDTO, GetAllRestaurantsSearchAndFilterDTO } from '../../dto/restaurant/get-all-restaurants.dto';
+import { GetRestaurantDataByIdDTO, GetRestaurantDataByIdResDTO } from '../../dto/restaurant/get-restaurant-by-id.dto';
+import { VerifyRestaurantDocumentDTO } from '../../dto/restaurant/verify-document.dto';
+import { RejectRestaurantDocumentDTO } from '../../dto/restaurant/reject-document.dto';
+import { RegistrationResponseDTO } from '../../dto/restaurant/restaurant.dto';
 
 export default class RestaurantDisplayService implements IRestaurantDisplayService {
     private adminRepository: IAdminRepository;
@@ -12,7 +17,7 @@ export default class RestaurantDisplayService implements IRestaurantDisplayServi
         this.nodemailerService = nodemailerService;
     }
 
-    async getAllRestaurants(data: any) {
+    async getAllRestaurants(data: GetAllRestaurantsSearchAndFilterDTO): Promise<GetAllRestaurantsResponseDTO> {
         try {
             const response = await this.adminRepository.getAllRestaurants(data);
             return { message: 'success', response };
@@ -21,8 +26,9 @@ export default class RestaurantDisplayService implements IRestaurantDisplayServi
         }
     }
 
-    async findRestaurantById(restaurantId: string) {
+    async findRestaurantById(data: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResDTO> {
         try {
+            const { restaurantId } = data
             const response = await this.adminRepository.findRestaurantById(restaurantId);
             return { message: 'success', response: response };
         } catch (error) {
@@ -30,8 +36,9 @@ export default class RestaurantDisplayService implements IRestaurantDisplayServi
         }
     }
 
-    async verifyRestaurantDocuments(restaurantId: string) {
+    async verifyRestaurantDocuments(data: VerifyRestaurantDocumentDTO): Promise<any> {
         try {
+            const { restaurantId } = data
             const response = await this.adminRepository.verifyRestaurantDocuments(restaurantId);
             return response;
         } catch (error) {
@@ -39,8 +46,9 @@ export default class RestaurantDisplayService implements IRestaurantDisplayServi
         }
     }
 
-    async rejectRestaurantDocuments(restaurantId: string, rejectionReason: string) {
+    async rejectRestaurantDocuments(data: RejectRestaurantDocumentDTO): Promise<RegistrationResponseDTO | string | { message: string }> {
         try {
+            const { restaurantId, rejectionReason } = data
             const response = await this.adminRepository.rejectRestaurantDocuments(restaurantId, rejectionReason);
             return response;
         } catch (error) {

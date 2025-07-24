@@ -1,8 +1,10 @@
 import { ILoginService } from '../interfaces/login.service.interface';
 import { IRestaurantRepository } from '../../repositories/interfaces/restaurant.repository.interface';
 import { IAuthService } from '../interfaces/auth.service.interface';
-import { LoginDTO } from '../../dto/auth/login.dto';
+import { HandleLoginFuctionDTO, HandleLoginFuctionReturnDataDTO, LoginCheckRestaurantResponse, LoginDTO } from '../../dto/auth/login.dto';
 import { RestaurantInterface } from '../../models/restaurant.model';
+import { FetchOnlineStatusResponseDTO, UpdateOnlineStatusDTO, UpdateOnlineStatusResponseDTO } from '../../dto/restaurant/update-online-status.dto';
+import { GetRestaurantDataByIdDTO, GetRestaurantDataByIdResponseDTO } from '../../dto/restaurant/get-restaurant-by-id.dto';
 
 export default class LoginService implements ILoginService {
     private restaurantRepository: IRestaurantRepository;
@@ -13,7 +15,7 @@ export default class LoginService implements ILoginService {
         this.authService = authService;
     }
 
-    private async handleLogin(restaurant: RestaurantInterface) {
+    private async handleLogin(restaurant: HandleLoginFuctionDTO): Promise<HandleLoginFuctionReturnDataDTO> {
         const role = 'Restaurant';
         const token = await this.authService.createToken(restaurant._id.toString(), '15m', 'Restaurant');
         const refreshToken = await this.authService.createToken(restaurant._id.toString(), '7d', 'Restaurant');
@@ -35,7 +37,7 @@ export default class LoginService implements ILoginService {
         };
     }
 
-    async loginCheckRestaurant(data: LoginDTO): Promise<any> {
+    async loginCheckRestaurant(data: LoginDTO): Promise<LoginCheckRestaurantResponse> {
         try {
             const { email, mobile } = data;
             const response = (await this.restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
@@ -61,8 +63,10 @@ export default class LoginService implements ILoginService {
         }
     }
 
-    async updateOnlineStatus(restaurantId: string, isOnline: boolean): Promise<any> {
+    async updateOnlineStatus(data: UpdateOnlineStatusDTO): Promise<UpdateOnlineStatusResponseDTO> {
         try {
+            const { restaurant_id, isOnline } = data
+            const restaurantId = restaurant_id
             const restaurant = await this.restaurantRepository.updateOnlineStatus(restaurantId, isOnline);
             if (typeof restaurant === 'string') {
                 return { message: 'Failed to update online status', error: restaurant };
@@ -81,9 +85,12 @@ export default class LoginService implements ILoginService {
         }
     }
 
-    async fetchOnlineStatus(restaurantId: string): Promise<any> {
+    async fetchOnlineStatus(restaurantId: string): Promise<FetchOnlineStatusResponseDTO> {
         try {
             const response = await this.restaurantRepository.fetchOnlineStatus(restaurantId);
+            if (typeof response === 'string') {
+                return { error: response };
+            }
             return response;
         } catch (error) {
             console.log('error on fetch online status on login service side');
@@ -91,12 +98,13 @@ export default class LoginService implements ILoginService {
         }
     }
 
-    async getRestaurantDataById(restaurantId: string): Promise<any> {
+    async getRestaurantDataById(data: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResponseDTO> {
         try {
-            const response =await this.restaurantRepository.getRestaurantDataById(restaurantId)
+            const { restaurantId } = data
+            const response = await this.restaurantRepository.getRestaurantDataById(restaurantId)
             return response
         } catch (error) {
-             console.log('error on get the restaurnt data by id');
+            console.log('error on get the restaurnt data by id');
             throw error;
         }
     }

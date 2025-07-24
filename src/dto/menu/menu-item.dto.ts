@@ -1,3 +1,4 @@
+import { MenuItemInterface } from "../../models/menu.model";
 
 export interface MenuItemDTO {
     _id?: string;
@@ -19,6 +20,9 @@ export interface VariantDTO {
     price: number;
     quantity: number;
 }
+
+export type MenuItemResponseDTO = MenuItemDTO | MenuItemInterface
+    | { error?: string; }
 
 export interface CartItemDTO {
     id: string;

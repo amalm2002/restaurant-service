@@ -78,8 +78,11 @@ export default class MessageHandler {
                 response = await menuController.getAllVariants(data);
                 break;
             case 'Get-All-Menus':
-                response = await menuController.getAllMenuData(data);
+                response = await menuController.getAllMenuData(data.restaurantId, data.search, data.category);
                 break;
+            // case 'Get-All-Menus':
+            //     response = await menuController.getAllMenuData(data);
+            //     break;
             case 'Get-Specific-Menu':
                 response = await menuController.getSpecificMenuData(data);
                 break;
@@ -91,6 +94,12 @@ export default class MessageHandler {
                 break;
             case 'Sort-Menu-Items':
                 response = await menuController.sortAllMenus(data);
+                break;
+            case 'Check-Stock':
+                response = await menuController.checkStockAvailability(data)
+                break;
+            case 'Reduce-Stock':
+                response = await menuController.decrementStock(data)
                 break;
             case 'Update-Menu-Quantity':
                 response = await menuController.updateMenuQuantity(data)
@@ -134,7 +143,6 @@ export default class MessageHandler {
             case 'Get-All-Restaurant-Payments':
                 response = await subscriptionPlanController.getAllRestaurantPayments(data);
                 break;
-
             default:
                 response = 'Request key not found';
                 break;

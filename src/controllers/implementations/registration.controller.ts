@@ -1,9 +1,9 @@
 import { IRegistrationController } from '../interfaces/registration.controller.interface';
 import { IRegistrationService } from '../../services/interfaces/registration.service.interface';
 import { IAuthService } from '../../services/interfaces/auth.service.interface';
-import { RegistrationDTO, RegistrationCheckDTO } from '../../dto/restaurant/restaurant.dto';
-import { DocumentsDTO, ResubDocsDTO } from '../../dto/restaurant/documents.dto';
-import { LocationDTO } from '../../dto/restaurant/location.dto';
+import { RegistrationDTO, RegistrationCheckDTO, RestaurantRegistrationResponseDTO, RegistrationCheckResponseDTO } from '../../dto/restaurant/restaurant.dto';
+import { DocumentsDTO, DocumentsUpdateResponseDTO, ResubDocsDTO, ResubDocsResponseDTO } from '../../dto/restaurant/documents.dto';
+import { LocationDTO, LocationUpdateResponseDTO } from '../../dto/restaurant/location.dto';
 import { OtpSendingUtil } from '../../utilities/otp-sending.util';
 import { INodemailerService } from '../../services/interfaces/nodemailer.service.interface';
 import { IOtpService } from '../../services/interfaces/otp.service.interface';
@@ -26,7 +26,7 @@ export default class RegistrationController implements IRegistrationController {
         this.otpService = otpService;
     }
 
-    async register(data: RegistrationDTO) {
+    async register(data: RegistrationDTO): Promise<RestaurantRegistrationResponseDTO> {
         const { restaurantName, email, mobile, otp, otpToken } = data;
 
         if (!otp || !otpToken) {
@@ -56,12 +56,10 @@ export default class RegistrationController implements IRegistrationController {
         }
     }
 
-    async checkRestaurant(data: RegistrationCheckDTO) {
+    async checkRestaurant(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
         try {
             const { email } = data;
             const response = await this.registrationService.checkRestaurant(data);
-            console.log('respoinse :', response);
-
             if (response.message === 'restaurant not registered') {
                 const token = await OtpSendingUtil.sendOtp(
                     email,
@@ -78,7 +76,7 @@ export default class RegistrationController implements IRegistrationController {
         }
     }
 
-    async restaurantResendOtp(data: RegistrationCheckDTO) {
+    async restaurantResendOtp(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
         try {
             const { email } = data
             const response = await this.registrationService.restaurantResendOtp(data);
@@ -94,7 +92,7 @@ export default class RegistrationController implements IRegistrationController {
         }
     }
 
-    async restaurantDocumentUpdate(data: DocumentsDTO) {
+    async restaurantDocumentUpdate(data: DocumentsDTO): Promise<DocumentsUpdateResponseDTO> {
         try {
             const response = await this.registrationService.restaurantDocumentUpdate(data);
             return response;
@@ -103,7 +101,7 @@ export default class RegistrationController implements IRegistrationController {
         }
     }
 
-    async restaurantLocation(data: LocationDTO) {
+    async restaurantLocation(data: LocationDTO): Promise<LocationUpdateResponseDTO> {
         try {
             const response = await this.registrationService.restaurantLocation(data);
             return response;
@@ -112,7 +110,7 @@ export default class RegistrationController implements IRegistrationController {
         }
     }
 
-    async resubmitRestaurantDocuments(data: ResubDocsDTO) {
+    async resubmitRestaurantDocuments(data: ResubDocsDTO): Promise<ResubDocsResponseDTO> {
         try {
             const response = await this.registrationService.resubmitDocuments(data);
             return response;

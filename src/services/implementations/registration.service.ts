@@ -2,9 +2,9 @@ import { IRegistrationService } from '../interfaces/registration.service.interfa
 import { IRestaurantRepository } from '../../repositories/interfaces/restaurant.repository.interface';
 import { IOtpService } from '../interfaces/otp.service.interface';
 import { INodemailerService } from '../interfaces/nodemailer.service.interface';
-import { RegistrationDTO, RegistrationCheckDTO } from '../../dto/restaurant/restaurant.dto';
-import { DocumentsDTO, ResubDocsDTO } from '../../dto/restaurant/documents.dto';
-import { LocationDTO } from '../../dto/restaurant/location.dto';
+import { RegistrationDTO, RegistrationCheckDTO, RegistrationResponseDTO, RestaurantRegistrationResponseDTO, RegistrationCheckResponseDTO } from '../../dto/restaurant/restaurant.dto';
+import { DocumentsDTO, DocumentsUpdateResponseDTO, ResubDocsDTO, ResubDocsResponseDTO } from '../../dto/restaurant/documents.dto';
+import { LocationDTO, LocationUpdateResponseDTO } from '../../dto/restaurant/location.dto';
 import { IAuthService } from '../interfaces/auth.service.interface';
 import { RestaurantInterface } from '../../models/restaurant.model';
 
@@ -26,7 +26,7 @@ export default class RegistrationService implements IRegistrationService {
         this.authService = authService;
     }
 
-    async register(data: RegistrationDTO) {
+    async register(data: RegistrationDTO): Promise<RestaurantRegistrationResponseDTO> {
         try {
             const response = await this.restaurantRepository.saveRestaurant(data);
             if (typeof response !== 'string' && response.email) {
@@ -39,7 +39,7 @@ export default class RegistrationService implements IRegistrationService {
         }
     }
 
-    async checkRestaurant(data: RegistrationCheckDTO) {
+    async checkRestaurant(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
         const { email, mobile } = data;
         try {
             const response = (await this.restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
@@ -72,7 +72,7 @@ export default class RegistrationService implements IRegistrationService {
         }
     }
 
-    async restaurantResendOtp(data: RegistrationCheckDTO) {
+    async restaurantResendOtp(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
         const { email, mobile } = data;
         try {
             const response = (await this.restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
@@ -116,7 +116,7 @@ export default class RegistrationService implements IRegistrationService {
         }
     }
 
-    async restaurantDocumentUpdate(data: DocumentsDTO) {
+    async restaurantDocumentUpdate(data: DocumentsDTO): Promise<DocumentsUpdateResponseDTO> {
         try {
             const response = await this.restaurantRepository.restaurantDocumentsUpdate(data);
             if (response) {
@@ -130,7 +130,7 @@ export default class RegistrationService implements IRegistrationService {
         }
     }
 
-    async restaurantLocation(data: LocationDTO) {
+    async restaurantLocation(data: LocationDTO): Promise<LocationUpdateResponseDTO> {
         try {
             const result = await this.restaurantRepository.restaurantLocationUpdate(data);
             if (!result.success) {
@@ -153,7 +153,7 @@ export default class RegistrationService implements IRegistrationService {
         }
     }
 
-    async resubmitDocuments(data: ResubDocsDTO) {
+    async resubmitDocuments(data: ResubDocsDTO): Promise<ResubDocsResponseDTO> {
         try {
             const response = await this.restaurantRepository.resubmitRestaurantDocuments(data);
             return { message: 'success', response: response };

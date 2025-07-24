@@ -1,6 +1,8 @@
 import { ILoginController } from '../interfaces/login.controller.interface';
 import { ILoginService } from '../../services/interfaces/login.service.interface';
-import { LoginDTO } from '../../dto/auth/login.dto';
+import { LoginCheckRestaurantResponse, LoginDTO } from '../../dto/auth/login.dto';
+import { FetchOnlineStatusResponseDTO, UpdateOnlineStatusDTO, UpdateOnlineStatusResponseDTO } from '../../dto/restaurant/update-online-status.dto';
+import { GetRestaurantDataByIdControllerResponseDTO, GetRestaurantDataByIdDTO, GetRestaurantDataByIdResponseDTO } from '../../dto/restaurant/get-restaurant-by-id.dto';
 
 export default class LoginController implements ILoginController {
     private loginService: ILoginService;
@@ -9,7 +11,7 @@ export default class LoginController implements ILoginController {
         this.loginService = loginService;
     }
 
-    async checkLoginRestaurant(data: LoginDTO) {
+    async checkLoginRestaurant(data: LoginDTO): Promise<LoginCheckRestaurantResponse> {
         try {
             const { email, mobile } = data;
             const response = await this.loginService.loginCheckRestaurant({ email, mobile });
@@ -19,17 +21,17 @@ export default class LoginController implements ILoginController {
         }
     }
 
-    async updateOnlineStatus(data: { restaurant_id: string; isOnline: boolean }) {
+    async updateOnlineStatus(data: UpdateOnlineStatusDTO): Promise<UpdateOnlineStatusResponseDTO> {
         try {
-            const { restaurant_id, isOnline } = data;
-            const response = await this.loginService.updateOnlineStatus(restaurant_id, isOnline);
+            // const { restaurant_id, isOnline } = data;
+            const response = await this.loginService.updateOnlineStatus(data);
             return response;
         } catch (error) {
             return { error: (error as Error).message };
         }
     }
 
-    async fetchOnlineStatus(restaurantId: string) {
+    async fetchOnlineStatus(restaurantId: string): Promise<FetchOnlineStatusResponseDTO> {
         try {
             const response = await this.loginService.fetchOnlineStatus(restaurantId);
             return response;
@@ -38,18 +40,16 @@ export default class LoginController implements ILoginController {
         }
     }
 
-    async getRestaurantDataById(data: { restaurantId: string }): Promise<any> {
+    async getRestaurantDataById(data: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdControllerResponseDTO> {
         try {
-            const restaurant_id = data.restaurantId;
-            const response = await this.loginService.getRestaurantDataById(restaurant_id);
-
+            // const restaurant_id = data.restaurantId;
+            const response = await this.loginService.getRestaurantDataById(data);
             if (!response || response.error) {
                 return {
                     success: false,
                     message: response?.error || 'Restaurant not found',
                 };
             }
-
             return {
                 success: true,
                 data: response,
