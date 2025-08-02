@@ -4,6 +4,7 @@ import { IRestaurantDisplayController } from '../../controllers/interfaces/resta
 import { IRestaurantMenuController } from '../../controllers/interfaces/restaurant-menu.controller.interface';
 import { ISubscriptionPlanController } from '../../controllers/interfaces/subscription-plan.controller.interface';
 import rabbitClient from './client';
+import { IReviewController } from '../../controllers/interfaces/review.controller.interfaces';
 
 export default class MessageHandler {
     static async handle(
@@ -17,10 +18,16 @@ export default class MessageHandler {
             adminController: IRestaurantDisplayController;
             menuController: IRestaurantMenuController;
             subscriptionPlanController: ISubscriptionPlanController;
+            reviewController: IReviewController;
         }
     ) {
-        const { registrationController, loginController, adminController, menuController, subscriptionPlanController } =
-            controllers;
+        const { registrationController,
+            loginController,
+            adminController,
+            menuController,
+            subscriptionPlanController,
+            reviewController
+        } = controllers;
         let response = data;
 
         console.log('The operation is ', operation, data);
@@ -142,6 +149,15 @@ export default class MessageHandler {
                 break;
             case 'Get-All-Restaurant-Payments':
                 response = await subscriptionPlanController.getAllRestaurantPayments(data);
+                break;
+            case 'Add-Food-Review':
+                response = await reviewController.addFoodReview(data);
+                break;
+            case 'Delete-Food-Review':
+                response = await reviewController.deleteFoodReview(data);
+                break;
+            case 'Get-User-Review-For-Food-Item':
+                response = await reviewController.getUserReviewForFoodItem(data);
                 break;
             default:
                 response = 'Request key not found';

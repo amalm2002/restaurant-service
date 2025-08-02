@@ -23,6 +23,10 @@ import RestaurantMenuService from '../../services/implementations/restaurant-men
 import SubscriptionService from '../../services/implementations/subscription-plan.service';
 import NodemailerService from '../../services/implementations/nodemailer.service';
 import OtpService from '../../services/implementations/otp.service';
+import { IReviewController } from '../../controllers/interfaces/review.controller.interfaces';
+import ReviewService from '../../services/implementations/review.service';
+import ReviewRepository from '../../repositories/implementations/review.repository';
+import ReviewController from '../../controllers/implementations/review.controller';
 
 export default class Consumer {
     private channel: Channel;
@@ -33,6 +37,7 @@ export default class Consumer {
         adminController: IRestaurantDisplayController;
         menuController: IRestaurantMenuController;
         subscriptionPlanController: ISubscriptionPlanController;
+        reviewController: IReviewController;
     };
 
     constructor(channel: Channel, rpcQueue: string) {
@@ -47,12 +52,14 @@ export default class Consumer {
         const menuRepo = new MenuRepository();
         const subscriptionPlanRepo = new SubscriptionPlanRepository();
         const transactionRepo = new TransactionRepository();
+        const reviewRepo = new ReviewRepository()
 
         const loginService = new LoginService(restaurantRepo, authService);
         const registrationService = new RegistrationService(restaurantRepo, otpService, nodemailerService, authService);
         const restaurantDisplayService = new RestaurantDisplayService(adminRepo, nodemailerService);
         const restaurantMenuService = new RestaurantMenuService(menuRepo);
         const subscriptionService = new SubscriptionService(subscriptionPlanRepo, transactionRepo);
+        const reviewService = new ReviewService(reviewRepo)
 
         this.controllers = {
             registrationController: new RegistrationController(registrationService, authService, nodemailerService, otpService),
@@ -60,6 +67,7 @@ export default class Consumer {
             adminController: new RestaurantDisplayController(restaurantDisplayService, nodemailerService, otpService),
             menuController: new RestaurantMenuController(restaurantMenuService),
             subscriptionPlanController: new SubscriptionPlanController(subscriptionService),
+            reviewController:new ReviewController(reviewService)
         };
     }
 
