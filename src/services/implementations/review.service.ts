@@ -12,13 +12,13 @@ export default class ReviewService implements IReviewService {
 
     async addFoodreview(data: ReviewDataDTO): Promise<any> {
         try {
-            const { itemId, rating, comment, orderId, userId, isEdit } = data;
+            const { itemId, rating, comment, orderId, userId, isEdit, userName } = data;
 
             if (rating < 1 || rating > 5) {
                 return { success: false, message: 'Rating must be between 1 and 5' };
             }
 
-            const review = await this.reviewRepository.addFoodReview(itemId, rating, comment, orderId, userId, isEdit);
+            const review = await this.reviewRepository.addFoodReview(itemId, rating, comment, orderId, userId, isEdit, userName);
 
             return {
                 success: true,
@@ -59,6 +59,19 @@ export default class ReviewService implements IReviewService {
             };
         } catch (error) {
             console.error('Error in getUserReviewForFoodItem:', error);
+            return { success: false, message: (error as Error).message || 'Failed to fetch review' };
+        }
+    }
+
+    async getFoodReviews(data: { dishId: string; }): Promise<any> {
+        try {
+            const reviewDatas = await this.reviewRepository.getFoodReview(data.dishId)
+            if (!reviewDatas) {
+                return { success: false, message: 'No Data found' }
+            }
+            return { success: true, response: reviewDatas }
+        } catch (error) {
+            console.error('Error in getFoodReview:', error);
             return { success: false, message: (error as Error).message || 'Failed to fetch review' };
         }
     }

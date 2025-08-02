@@ -159,6 +159,9 @@ export default class MessageHandler {
             case 'Get-User-Review-For-Food-Item':
                 response = await reviewController.getUserReviewForFoodItem(data);
                 break;
+            case 'Get-Food-Review':
+                response = await reviewController.getFoodReviews(data);
+                break;
             default:
                 response = 'Request key not found';
                 break;

@@ -27,4 +27,8 @@ export default class ReviewController implements IReviewController {
     async getUserReviewForFoodItem(data: { userId: string; orderId: string; itemId: string }): Promise<any> {
         return await this.reviewService.getUserReviewForFoodItem(data.userId, data.orderId, data.itemId);
     }
+
+    async getFoodReviews(data: { dishId: string }): Promise<any> {
+        return await this.reviewService.getFoodReviews(data)
+    }
 }

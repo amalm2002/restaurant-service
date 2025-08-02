@@ -1,4 +1,3 @@
-// repositories/review.repository.ts
 import mongoose from "mongoose";
 import ReviewModel, { ReviewInterface } from "../../models/review.model";
 import { IReviewRepository } from "../interfaces/review.repository.interfaces";
@@ -15,7 +14,8 @@ export default class ReviewRepository extends BaseRepository<ReviewInterface> im
         comment: string,
         orderId: string,
         userId: string,
-        isEdit: boolean
+        isEdit: boolean,
+        userName: string
     ): Promise<ReviewInterface> {
 
         if (!mongoose.Types.ObjectId.isValid(itemId) ||
@@ -53,6 +53,7 @@ export default class ReviewRepository extends BaseRepository<ReviewInterface> im
 
             const newReviewData: Partial<ReviewInterface> = {
                 foodId: itemId,
+                userName,
                 userId,
                 orderId,
                 rating,
@@ -91,5 +92,9 @@ export default class ReviewRepository extends BaseRepository<ReviewInterface> im
             orderId,
             foodId: itemId,
         }).exec();
+    }
+
+    async getFoodReview(dishId: string): Promise<ReviewInterface[] | []> {
+        return await ReviewModel.find({ foodId: dishId })
     }
 }

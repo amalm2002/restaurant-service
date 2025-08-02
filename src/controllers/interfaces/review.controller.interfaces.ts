@@ -4,4 +4,5 @@ export interface IReviewController {
     addFoodReview(data: ReviewDataDTO): Promise<any>;
     deleteFoodReview(data: { userId: string; orderId: string; itemId: string }): Promise<any>;
     getUserReviewForFoodItem(data: { userId: string; orderId: string; itemId: string }): Promise<any>;
+    getFoodReviews(data:{dishId:string}):Promise<any>
 }

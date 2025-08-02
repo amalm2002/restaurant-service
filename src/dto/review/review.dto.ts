@@ -4,5 +4,6 @@ export interface ReviewDataDTO {
     comment: string;
     orderId: string;
     userId: string;
+    userName: string;
     isEdit: false
 }

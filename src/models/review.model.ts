@@ -8,6 +8,7 @@ export interface ReviewInterface extends BaseSchemaInterface {
     orderId: string;
     rating: number;
     comment?: string;
+    userName: string;
 }
 
 
@@ -22,6 +23,9 @@ const reviewSchema: Schema = new Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: true,
+        },
+        userName: {
+            type: String
         },
         orderId: {
             type: mongoose.Schema.Types.ObjectId,
