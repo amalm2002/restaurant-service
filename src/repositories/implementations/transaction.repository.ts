@@ -153,4 +153,39 @@ export default class TransactionRepository extends BaseRepository<PaymentInterfa
             throw new Error(`Failed to fetch all restaurant payments details: ${(error as Error).message}`);
         }
     }
+
+    async getRestaurantChartData(query: any): Promise<{ restaurantName: string; orderVolume: number; revenue: number }[]> {
+        try {
+            const payments = await Payment.aggregate([
+                { $match: query },
+                {
+                    $group: {
+                        _id: '$restaurantId',
+                        orderVolume: { $sum: 1 },
+                        revenue: { $sum: '$amount' },
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'restaurants',
+                        localField: '_id',
+                        foreignField: '_id',
+                        as: 'restaurant',
+                    },
+                },
+                { $unwind: '$restaurant' },
+                {
+                    $project: {
+                        restaurantName: '$restaurant.restaurantName',
+                        orderVolume: 1,
+                        revenue: 1,
+                        _id: 0,
+                    },
+                },
+            ]);
+            return payments;
+        } catch (error) {
+            throw new Error(`Failed to fetch restaurant chart data: ${(error as Error).message}`);
+        }
+    }
 }

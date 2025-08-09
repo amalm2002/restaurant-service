@@ -11,6 +11,7 @@ import { EditSubscriptionPlanResponseDTO } from '../../dto/subscription/edit-sub
 import { DeleteSubscriptionPlanDTO, DeleteSubscriptionPlanResponseDTO } from '../../dto/subscription/delete-subscription.plan.dto';
 import { GetRestaurantDataByIdDTO } from '../../dto/restaurant/get-restaurant-by-id.dto';
 import { SubscriptionOrderResponseDTO, TransactionDetailsDTO } from '../../dto/subscription/restaurant-transaction.dto';
+import { GetRestaurantChartDataDTO } from '../../dto/restaurant/get-restaurant-chart.dto';
 
 
 interface RazorpayOrder {
@@ -341,6 +342,23 @@ export default class SubscriptionService implements ISubscriptionService {
             };
         } catch (error) {
             console.log('Error in getAllRestaurantPayments:', error);
+            throw new Error((error as Error).message);
+        }
+    }
+
+    async getRestaurantChartData(data: { startDate?: string; endDate?: string }): Promise<GetRestaurantChartDataDTO> {
+        try {
+            const query: any = {};
+            if (data.startDate && data.endDate) {
+                query.createdAt = { $gte: new Date(data.startDate), $lte: new Date(data.endDate) };
+            }
+            const payments = await this.transactionRepository.getRestaurantChartData(query);
+            return {
+                message: 'success',
+                response: payments,
+            };
+        } catch (error) {
+            console.log('Error in getRestaurantChartData:', error);
             throw new Error((error as Error).message);
         }
     }

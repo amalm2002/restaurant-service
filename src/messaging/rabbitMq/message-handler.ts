@@ -150,6 +150,9 @@ export default class MessageHandler {
             case 'Get-All-Restaurant-Payments':
                 response = await subscriptionPlanController.getAllRestaurantPayments(data);
                 break;
+            case 'Get-Restaurant-Chart-Data':
+                response = await subscriptionPlanController.getRestaurantChartData(data);
+                break;
             case 'Add-Food-Review':
                 response = await reviewController.addFoodReview(data);
                 break;

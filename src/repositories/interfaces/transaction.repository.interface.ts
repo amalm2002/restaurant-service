@@ -11,4 +11,5 @@ export interface ITransactionRepository {
     getTransactionHistory(restaurantId: string): Promise<PaymentInterface[]>;
     getTheTransactionDetails(transactionId: string): Promise<PaymentInterface | null>;
     getAllRestaurantPayments(data: any): Promise<PaymentInterface[]>;
+    getRestaurantChartData(query: any): Promise<{ restaurantName: string; orderVolume: number; revenue: number }[]>;
 }
