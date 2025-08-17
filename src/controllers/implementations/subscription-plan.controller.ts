@@ -7,7 +7,7 @@ import { EditSubscriptionPlanResponseDTO } from '../../dto/subscription/edit-sub
 import { DeleteSubscriptionPlanDTO, DeleteSubscriptionPlanResponseDTO } from '../../dto/subscription/delete-subscription.plan.dto';
 import { GetRestaurantDataByIdDTO } from '../../dto/restaurant/get-restaurant-by-id.dto';
 import { SubscriptionOrderResponseDTO, TransactionDetailsDTO } from '../../dto/subscription/restaurant-transaction.dto';
-import { GetRestaurantChartDataDTO } from '../../dto/restaurant/get-restaurant-chart.dto';
+import { GetRestaurantChartDataDTO, GetRestaurantChartDataRequestDTO } from '../../dto/restaurant/get-restaurant-chart.dto';
 
 export default class SubscriptionPlanController implements ISubscriptionPlanController {
     private subscriptionService: ISubscriptionService;
@@ -146,7 +146,7 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         }
     }
 
-    async getRestaurantChartData(data: { startDate?: string; endDate?: string }): Promise<GetRestaurantChartDataDTO> {
+    async getRestaurantChartData(data: GetRestaurantChartDataRequestDTO): Promise<GetRestaurantChartDataDTO> {
         try {
             const response = await this.subscriptionService.getRestaurantChartData(data);
             return response;

@@ -1,6 +1,8 @@
-import { ReviewDataDTO } from "../../dto/review/review.dto";
+import { ReviewDataDTO, ReviewDataResponseDTO } from "../../dto/review/add-review.dto";
 import { IReviewController } from "../interfaces/review.controller.interfaces";
 import { IReviewService } from "../../services/interfaces/review.service.interfaces";
+import { DeleteFoodReviewDTO, DeleteFoodReviewResponseDTO } from "../../dto/review/delete-review.dto";
+import { GetFoodReviewDTO, GetFoodReviewResponseDTO } from "../../dto/review/get-food-review.dto";
 
 
 export default class ReviewController implements IReviewController {
@@ -10,7 +12,7 @@ export default class ReviewController implements IReviewController {
         this.reviewService = reviewService
     }
 
-    async addFoodReview(data: ReviewDataDTO): Promise<any> {
+    async addFoodReview(data: ReviewDataDTO): Promise<ReviewDataResponseDTO> {
         try {
             const response = await this.reviewService.addFoodreview(data)
             return response
@@ -20,15 +22,15 @@ export default class ReviewController implements IReviewController {
         }
     }
 
-    async deleteFoodReview(data: { userId: string; orderId: string; itemId: string }): Promise<any> {
-        return await this.reviewService.deleteFoodReview(data.userId, data.orderId, data.itemId);
+    async deleteFoodReview(data: DeleteFoodReviewDTO): Promise<DeleteFoodReviewResponseDTO> {
+        return await this.reviewService.deleteFoodReview(data);
     }
 
-    async getUserReviewForFoodItem(data: { userId: string; orderId: string; itemId: string }): Promise<any> {
-        return await this.reviewService.getUserReviewForFoodItem(data.userId, data.orderId, data.itemId);
+    async getUserReviewForFoodItem(data: DeleteFoodReviewDTO): Promise<ReviewDataResponseDTO> {
+        return await this.reviewService.getUserReviewForFoodItem(data);
     }
 
-    async getFoodReviews(data: { dishId: string }): Promise<any> {
+    async getFoodReviews(data: GetFoodReviewDTO): Promise<GetFoodReviewResponseDTO> {
         return await this.reviewService.getFoodReviews(data)
     }
 }

@@ -7,3 +7,10 @@ export interface ReviewDataDTO {
     userName: string;
     isEdit: false
 }
+
+export interface ReviewDataResponseDTO {
+    success?: boolean;
+    message: string;
+    data?: any;
+    error?: boolean;
+}

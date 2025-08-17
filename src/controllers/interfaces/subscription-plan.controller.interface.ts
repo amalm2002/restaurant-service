@@ -5,7 +5,7 @@ import { EditSubscriptionPlanResponseDTO } from '../../dto/subscription/edit-sub
 import { DeleteSubscriptionPlanDTO, DeleteSubscriptionPlanResponseDTO } from '../../dto/subscription/delete-subscription.plan.dto';
 import { SubscriptionOrderResponseDTO, TransactionDetailsDTO } from '../../dto/subscription/restaurant-transaction.dto';
 import { GetRestaurantDataByIdDTO } from '../../dto/restaurant/get-restaurant-by-id.dto';
-import { GetRestaurantChartDataDTO } from '../../dto/restaurant/get-restaurant-chart.dto';
+import { GetRestaurantChartDataDTO, GetRestaurantChartDataRequestDTO } from '../../dto/restaurant/get-restaurant-chart.dto';
 
 export interface ISubscriptionPlanController {
     addNewSubscriptionPlan(data: SubscriptionPlanDTO): Promise<SubscriptionPlanControllerResponseDTO>;
@@ -20,5 +20,5 @@ export interface ISubscriptionPlanController {
     getTheTransactionHistory(data: GetRestaurantDataByIdDTO): Promise<SubscriptionOrderResponseDTO[] | { error: boolean; message: string }>;
     getTheTransactionDetails(data: TransactionDetailsDTO): Promise<SubscriptionOrderResponseDTO | { error: boolean; message: string }>;
     getAllRestaurantPayments(data: void): Promise<GetAllRestaurantPaymentsDTO>;
-    getRestaurantChartData(data: { startDate?: string; endDate?: string }): Promise<GetRestaurantChartDataDTO>;
+    getRestaurantChartData(data: GetRestaurantChartDataRequestDTO): Promise<GetRestaurantChartDataDTO>;
 }

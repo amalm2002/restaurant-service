@@ -1,7 +1,8 @@
-// services/review.service.ts
-import { ReviewDataDTO } from "../../dto/review/review.dto";
+import { ReviewDataDTO, ReviewDataResponseDTO } from "../../dto/review/add-review.dto";
 import { IReviewService } from "../interfaces/review.service.interfaces";
 import { IReviewRepository } from "../../repositories/interfaces/review.repository.interfaces";
+import { DeleteFoodReviewDTO, DeleteFoodReviewResponseDTO } from "../../dto/review/delete-review.dto";
+import { GetFoodReviewDTO, GetFoodReviewResponseDTO } from "../../dto/review/get-food-review.dto";
 
 export default class ReviewService implements IReviewService {
     private reviewRepository: IReviewRepository;
@@ -10,7 +11,7 @@ export default class ReviewService implements IReviewService {
         this.reviewRepository = reviewRepository;
     }
 
-    async addFoodreview(data: ReviewDataDTO): Promise<any> {
+    async addFoodreview(data: ReviewDataDTO): Promise<ReviewDataResponseDTO> {
         try {
             const { itemId, rating, comment, orderId, userId, isEdit, userName } = data;
 
@@ -31,8 +32,9 @@ export default class ReviewService implements IReviewService {
         }
     }
 
-    async deleteFoodReview(userId: string, orderId: string, itemId: string): Promise<any> {
+    async deleteFoodReview(data: DeleteFoodReviewDTO): Promise<DeleteFoodReviewResponseDTO> {
         try {
+            const { userId, orderId, itemId } = data
             await this.reviewRepository.deleteFoodReview(userId, orderId, itemId);
             return {
                 success: true,
@@ -44,8 +46,9 @@ export default class ReviewService implements IReviewService {
         }
     }
 
-    async getUserReviewForFoodItem(userId: string, orderId: string, itemId: string): Promise<any> {
+    async getUserReviewForFoodItem(data: DeleteFoodReviewDTO): Promise<ReviewDataResponseDTO> {
         try {
+            const { userId, orderId, itemId } = data
             const review = await this.reviewRepository.getUserReviewForFoodItem(userId, orderId, itemId);
 
             if (!review) {
@@ -63,7 +66,7 @@ export default class ReviewService implements IReviewService {
         }
     }
 
-    async getFoodReviews(data: { dishId: string; }): Promise<any> {
+    async getFoodReviews(data: GetFoodReviewDTO): Promise<GetFoodReviewResponseDTO> {
         try {
             const reviewDatas = await this.reviewRepository.getFoodReview(data.dishId)
             if (!reviewDatas) {
