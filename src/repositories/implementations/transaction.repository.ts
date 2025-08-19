@@ -1,7 +1,6 @@
 import Payment, { PaymentInterface } from '../../models/payment.model';
 import { ITransactionRepository } from '../interfaces/transaction.repository.interface';
 import { PaymentDTO, VerifyPaymentDTO, FailedPaymentDTO } from '../../dto/subscription/payment.dto';
-import mongoose from 'mongoose';
 import { BaseRepository } from './base.repository';
 
 export default class TransactionRepository extends BaseRepository<PaymentInterface> implements ITransactionRepository {

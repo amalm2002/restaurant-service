@@ -1,8 +1,8 @@
 
 import { IRestaurantMenuService } from '../interfaces/restaurant-menu.service.interface';
 import { IMenuRepository } from '../../repositories/interfaces/menu.repository.interface';
-import { CartItemDTO, MenuItemDTO, MenuItemResponseDTO } from '../../dto/menu/menu-item.dto';
-import { VariantDTO, VariantResponseDTO } from '../../dto/menu/variant.dto';
+import { MenuItemDTO, MenuItemResponseDTO } from '../../dto/menu/menu-item.dto';
+import { VariantResponseDTO } from '../../dto/menu/variant.dto';
 import { RestaurantMenuItemResponseDTO } from '../../dto/menu/get-all-restaurant.menu.dto';
 import { SortedMenuItemResponseDTO, SortMenuDTO } from '../../dto/menu/sort-menu.dto';
 import {
@@ -16,15 +16,14 @@ import {
 } from '../../dto/menu/update-quantity.dto';
 
 export default class RestaurantMenuService implements IRestaurantMenuService {
-    private menuRepository: IMenuRepository;
 
-    constructor(menuRepository: IMenuRepository) {
-        this.menuRepository = menuRepository;
-    }
+    constructor(
+        private readonly _menuRepository: IMenuRepository
+    ) { }
 
     async addMenuItem(data: MenuItemDTO): Promise<MenuItemResponseDTO> {
         try {
-            return await this.menuRepository.createMenuItem(data);
+            return await this._menuRepository.createMenuItem(data);
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -32,7 +31,7 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
 
     async getAllVariants(restaurantId: string): Promise<VariantResponseDTO[] | { error: string }> {
         try {
-            return await this.menuRepository.getAllVariants(restaurantId);
+            return await this._menuRepository.getAllVariants(restaurantId);
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -40,7 +39,7 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
 
     async getAllMenuData(restaurantId: string, search?: string, category?: string): Promise<MenuItemResponseDTO[] | { error: string }> {
         try {
-            return await this.menuRepository.getAllMenuData(restaurantId);
+            return await this._menuRepository.getAllMenuData(restaurantId);
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -48,7 +47,7 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
 
     async getSpecificMenu(menuItemId: string): Promise<MenuItemResponseDTO | { error: string }> {
         try {
-            return await this.menuRepository.getSpecificMenuData(menuItemId);
+            return await this._menuRepository.getSpecificMenuData(menuItemId);
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -56,7 +55,7 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
 
     async editMenuItems(data: MenuItemDTO): Promise<MenuItemResponseDTO> {
         try {
-            return await this.menuRepository.editMenuItems(data);
+            return await this._menuRepository.editMenuItems(data);
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -64,7 +63,7 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
 
     async softDeleteMenu(menuItemId: string): Promise<MenuItemResponseDTO | { message: string }> {
         try {
-            return await this.menuRepository.softDeleteMenu(menuItemId);
+            return await this._menuRepository.softDeleteMenu(menuItemId);
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -72,7 +71,7 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
 
     async getAllRestaurantMenus(data: void): Promise<RestaurantMenuItemResponseDTO[]> {
         try {
-            return await this.menuRepository.getRestaurantMenus(data);
+            return await this._menuRepository.getRestaurantMenus(data);
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -80,7 +79,7 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
 
     async sortAllMenus(params: SortMenuDTO): Promise<SortedMenuItemResponseDTO[]> {
         try {
-            return await this.menuRepository.sortAllMenu(params);
+            return await this._menuRepository.sortAllMenu(params);
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -88,7 +87,7 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
 
     async updateMenuQuantity(data: UpdateMenuQuantityDTO): Promise<UpdateMenuQuantityResponseDTO> {
         try {
-            return await this.menuRepository.updateMenuQuantity(data)
+            return await this._menuRepository.updateMenuQuantity(data)
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -96,7 +95,7 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
 
     async cancelOrderQuantityUpdations(refundData: CancelOrderQuantityUpdationDTO): Promise<CancelOrderQuantityUpdationResponseDTO> {
         try {
-            return await this.menuRepository.cancelOrderQuantityUpdations(refundData)
+            return await this._menuRepository.cancelOrderQuantityUpdations(refundData)
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -104,7 +103,7 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
 
     async checkStockAvailability(data: any): Promise<CheckStockAvailabilityResponseDTO> {
         try {
-            return await this.menuRepository.checkStockAvailability(data)
+            return await this._menuRepository.checkStockAvailability(data)
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -112,7 +111,7 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
 
     async decrementStock(data: DecrementStockDTO): Promise<DecrementStockResponseDTO> {
         try {
-            return await this.menuRepository.decrementStock(data)
+            return await this._menuRepository.decrementStock(data)
         } catch (error) {
             throw new Error((error as Error).message);
         }

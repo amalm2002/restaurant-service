@@ -23,17 +23,15 @@ interface RazorpayOrder {
 }
 
 export default class SubscriptionService implements ISubscriptionService {
-    private subscriptionPlanRepository: ISubscriptionPlanRepository;
-    private transactionRepository: ITransactionRepository;
-    private razorpay: Razorpay;
+
+    private readonly _razorpay: Razorpay;
 
     constructor(
-        subscriptionPlanRepository: ISubscriptionPlanRepository,
-        transactionRepository: ITransactionRepository
+        private readonly _subscriptionPlanRepository: ISubscriptionPlanRepository,
+        private readonly _transactionRepository: ITransactionRepository
     ) {
-        this.subscriptionPlanRepository = subscriptionPlanRepository;
-        this.transactionRepository = transactionRepository;
-        this.razorpay = new Razorpay({
+
+        this._razorpay = new Razorpay({
             key_id: process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY_ID || '',
             key_secret: process.env.RAZORPAY_SECRET_ID || process.env.VITE_RAZORPAY_SECRET_ID || '',
         });
@@ -48,7 +46,7 @@ export default class SubscriptionService implements ISubscriptionService {
         if (!name || !period || !description || !features || isNaN(priceNumber)) {
             throw new Error('Missing or invalid required fields');
         }
-        const plan = await this.subscriptionPlanRepository.addSubscriptionPlan({
+        const plan = await this._subscriptionPlanRepository.addSubscriptionPlan({
             name,
             price: priceNumber.toString(),
             period,
@@ -61,7 +59,7 @@ export default class SubscriptionService implements ISubscriptionService {
 
     async getAllSubscriptionPlan(data: void): Promise<GetAllSubscriptionPlanResponseDTO> {
         try {
-            const plans = await this.subscriptionPlanRepository.getAllSubscriptionPlans();
+            const plans = await this._subscriptionPlanRepository.getAllSubscriptionPlans();
             return {
                 message: 'success',
                 response: plans,
@@ -85,7 +83,7 @@ export default class SubscriptionService implements ISubscriptionService {
         const cleanedPrice = price.toString().replace(/[^0-9.]/g, '');
         const priceNumber = Number(cleanedPrice);
 
-        const updatedPlan = await this.subscriptionPlanRepository.updateSubscriptionPlan(id, {
+        const updatedPlan = await this._subscriptionPlanRepository.updateSubscriptionPlan(id, {
             name,
             price: priceNumber.toString(),
             period,
@@ -102,7 +100,7 @@ export default class SubscriptionService implements ISubscriptionService {
 
     async deleteSubscriptionPlan(data: DeleteSubscriptionPlanDTO): Promise<DeleteSubscriptionPlanResponseDTO> {
         try {
-            const deletedPlan = await this.subscriptionPlanRepository.deleteSubscriptionPlan(data);
+            const deletedPlan = await this._subscriptionPlanRepository.deleteSubscriptionPlan(data);
             return {
                 message: deletedPlan ? 'success' : 'not found',
                 response: deletedPlan,
@@ -118,7 +116,7 @@ export default class SubscriptionService implements ISubscriptionService {
             if (!data.restaurantId || typeof data.restaurantId !== 'string') {
                 throw new Error('Invalid restaurantId provided');
             }
-            return await this.transactionRepository.findExistPlan({ id: data.restaurantId });
+            return await this._transactionRepository.findExistPlan({ id: data.restaurantId });
         } catch (error) {
             console.log('Error in getAnySubscriptionPlanExist:', error);
             throw new Error((error as Error).message);
@@ -136,7 +134,7 @@ export default class SubscriptionService implements ISubscriptionService {
                 throw new Error('Razorpay secret is missing');
             }
 
-            const planExist = await this.transactionRepository.findExistPlan({ id: restaurantId });
+            const planExist = await this._transactionRepository.findExistPlan({ id: restaurantId });
             console.log('plan existed :', planExist);
 
             if (!planExist.allowed) {
@@ -155,7 +153,7 @@ export default class SubscriptionService implements ISubscriptionService {
                 payment_capture: true,
             };
 
-            const rawOrder = await this.razorpay.orders.create(payload);
+            const rawOrder = await this._razorpay.orders.create(payload);
 
             if (!rawOrder || !rawOrder.id) {
                 throw new Error('Failed to create Razorpay order: No order ID returned');
@@ -170,7 +168,7 @@ export default class SubscriptionService implements ISubscriptionService {
             };
 
             if (!isRetry) {
-                await this.transactionRepository.createPayment({
+                await this._transactionRepository.createPayment({
                     restaurantId,
                     planId,
                     amount,
@@ -220,7 +218,7 @@ export default class SubscriptionService implements ISubscriptionService {
 
             const expireDateString = expireDate.toISOString();
 
-            const payment = await this.transactionRepository.verifyPayment({
+            const payment = await this._transactionRepository.verifyPayment({
                 razorpay_order_id,
                 razorpay_payment_id,
                 razorpay_signature,
@@ -246,7 +244,7 @@ export default class SubscriptionService implements ISubscriptionService {
     async handleFailedPayment(data: FailedPaymentDTO): Promise<FailedPaymentResponseDTO> {
         try {
             const { razorpay_order_id, razorpay_payment_id, error_code, error_description, restaurantId, planId } = data;
-            const payment = await this.transactionRepository.updateFailedPayment({
+            const payment = await this._transactionRepository.updateFailedPayment({
                 razorpay_order_id,
                 razorpay_payment_id,
                 error_code,
@@ -270,7 +268,7 @@ export default class SubscriptionService implements ISubscriptionService {
 
     async retryPayment(data: RetryPaymentDTO): Promise<RetryPaymentResponseDTO> {
         try {
-            const payment = await this.transactionRepository.findPaymentById(data.paymentId);
+            const payment = await this._transactionRepository.findPaymentById(data.paymentId);
             if (!payment) {
                 throw new Error('Payment record not found');
             }
@@ -294,7 +292,7 @@ export default class SubscriptionService implements ISubscriptionService {
                 isRetry: true,
             });
 
-            await this.transactionRepository.updatePaymentOrderId({
+            await this._transactionRepository.updatePaymentOrderId({
                 paymentId: data.paymentId,
                 razorpayOrderId: orderData.orderId,
             });
@@ -315,7 +313,7 @@ export default class SubscriptionService implements ISubscriptionService {
     async getTheTransactionHistory(data: GetRestaurantDataByIdDTO): Promise<SubscriptionOrderResponseDTO[]> {
         try {
             const { restaurantId } = data
-            const response = await this.transactionRepository.getTransactionHistory(restaurantId);
+            const response = await this._transactionRepository.getTransactionHistory(restaurantId);
             return response;
         } catch (error) {
             console.log('Error in getTheTransactionHistory:', error);
@@ -325,7 +323,7 @@ export default class SubscriptionService implements ISubscriptionService {
 
     async getTheTransactionDetails(data: TransactionDetailsDTO): Promise<SubscriptionOrderResponseDTO> {
         try {
-            const transaction = await this.transactionRepository.getTheTransactionDetails(data.transactionId);
+            const transaction = await this._transactionRepository.getTheTransactionDetails(data.transactionId);
             return transaction;
         } catch (error) {
             console.log('Error in getTheTransactionDetails:', error);
@@ -335,7 +333,7 @@ export default class SubscriptionService implements ISubscriptionService {
 
     async getAllRestaurantPayments(data: void): Promise<GetAllRestaurantPaymentsDTO> {
         try {
-            const payments = await this.transactionRepository.getAllRestaurantPayments(data);
+            const payments = await this._transactionRepository.getAllRestaurantPayments(data);
             return {
                 message: 'success',
                 response: payments,
@@ -352,7 +350,7 @@ export default class SubscriptionService implements ISubscriptionService {
             if (data.startDate && data.endDate) {
                 query.createdAt = { $gte: new Date(data.startDate), $lte: new Date(data.endDate) };
             }
-            const payments = await this.transactionRepository.getRestaurantChartData(query);
+            const payments = await this._transactionRepository.getRestaurantChartData(query);
             return {
                 message: 'success',
                 response: payments,

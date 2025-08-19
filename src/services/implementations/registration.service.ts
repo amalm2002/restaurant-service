@@ -9,26 +9,17 @@ import { IAuthService } from '../interfaces/auth.service.interface';
 import { RestaurantInterface } from '../../models/restaurant.model';
 
 export default class RegistrationService implements IRegistrationService {
-    private restaurantRepository: IRestaurantRepository;
-    private otpService: IOtpService;
-    private nodemailerService: INodemailerService;
-    private authService: IAuthService;
 
     constructor(
-        restaurantRepository: IRestaurantRepository,
-        otpService: IOtpService,
-        nodemailerService: INodemailerService,
-        authService: IAuthService
-    ) {
-        this.restaurantRepository = restaurantRepository;
-        this.otpService = otpService;
-        this.nodemailerService = nodemailerService;
-        this.authService = authService;
-    }
+        private readonly _restaurantRepository: IRestaurantRepository,
+        private readonly _otpService: IOtpService,
+        private readonly _nodemailerService: INodemailerService,
+        private readonly _authService: IAuthService,
+    ) { }
 
     async register(data: RegistrationDTO): Promise<RestaurantRegistrationResponseDTO> {
         try {
-            const response = await this.restaurantRepository.saveRestaurant(data);
+            const response = await this._restaurantRepository.saveRestaurant(data);
             if (typeof response !== 'string' && response.email) {
                 return { message: 'Success', restaurant_id: response._id };
             }
@@ -42,7 +33,7 @@ export default class RegistrationService implements IRegistrationService {
     async checkRestaurant(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
         const { email, mobile } = data;
         try {
-            const response = (await this.restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
+            const response = (await this._restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
 
             if (response) {
                 const documents = Object.values(response.restaurantDocuments).every(value => !value);
@@ -75,7 +66,7 @@ export default class RegistrationService implements IRegistrationService {
     async restaurantResendOtp(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
         const { email, mobile } = data;
         try {
-            const response = (await this.restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
+            const response = (await this._restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
 
             if (response) {
                 const documents = Object.values(response.restaurantDocuments || {}).every(
@@ -101,9 +92,9 @@ export default class RegistrationService implements IRegistrationService {
                 }
             }
 
-            const otp = this.otpService.generateOTP();
-            const otpToken = await this.authService.createToken(otp, '2d', 'Otp');
-            await this.nodemailerService.sendMail(
+            const otp = this._otpService.generateOTP();
+            const otpToken = await this._authService.createToken(otp, '2d', 'Otp');
+            await this._nodemailerService.sendMail(
                 email,
                 'Otp Verification',
                 `Hello,\n\nThank you for registering with your Restaurant !, your OTP is ${otp}\n\nHave a nice day!!!`
@@ -118,7 +109,7 @@ export default class RegistrationService implements IRegistrationService {
 
     async restaurantDocumentUpdate(data: DocumentsDTO): Promise<DocumentsUpdateResponseDTO> {
         try {
-            const response = await this.restaurantRepository.restaurantDocumentsUpdate(data);
+            const response = await this._restaurantRepository.restaurantDocumentsUpdate(data);
             if (response) {
                 return { message: 'Success', restaurantResponse: response };
             } else {
@@ -132,7 +123,7 @@ export default class RegistrationService implements IRegistrationService {
 
     async restaurantLocation(data: LocationDTO): Promise<LocationUpdateResponseDTO> {
         try {
-            const result = await this.restaurantRepository.restaurantLocationUpdate(data);
+            const result = await this._restaurantRepository.restaurantLocationUpdate(data);
             if (!result.success) {
                 return {
                     success: false,
@@ -155,7 +146,7 @@ export default class RegistrationService implements IRegistrationService {
 
     async resubmitDocuments(data: ResubDocsDTO): Promise<ResubDocsResponseDTO> {
         try {
-            const response = await this.restaurantRepository.resubmitRestaurantDocuments(data);
+            const response = await this._restaurantRepository.resubmitRestaurantDocuments(data);
             return { message: 'success', response: response };
         } catch (error) {
             console.log('error on resubmitDocuments service side:', error);

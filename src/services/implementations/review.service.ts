@@ -5,11 +5,10 @@ import { DeleteFoodReviewDTO, DeleteFoodReviewResponseDTO } from "../../dto/revi
 import { GetFoodReviewDTO, GetFoodReviewResponseDTO } from "../../dto/review/get-food-review.dto";
 
 export default class ReviewService implements IReviewService {
-    private reviewRepository: IReviewRepository;
 
-    constructor(reviewRepository: IReviewRepository) {
-        this.reviewRepository = reviewRepository;
-    }
+    constructor(
+        private readonly _reviewRepository: IReviewRepository
+    ) { }
 
     async addFoodreview(data: ReviewDataDTO): Promise<ReviewDataResponseDTO> {
         try {
@@ -19,7 +18,7 @@ export default class ReviewService implements IReviewService {
                 return { success: false, message: 'Rating must be between 1 and 5' };
             }
 
-            const review = await this.reviewRepository.addFoodReview(itemId, rating, comment, orderId, userId, isEdit, userName);
+            const review = await this._reviewRepository.addFoodReview(itemId, rating, comment, orderId, userId, isEdit, userName);
 
             return {
                 success: true,
@@ -35,7 +34,7 @@ export default class ReviewService implements IReviewService {
     async deleteFoodReview(data: DeleteFoodReviewDTO): Promise<DeleteFoodReviewResponseDTO> {
         try {
             const { userId, orderId, itemId } = data
-            await this.reviewRepository.deleteFoodReview(userId, orderId, itemId);
+            await this._reviewRepository.deleteFoodReview(userId, orderId, itemId);
             return {
                 success: true,
                 message: 'Review deleted successfully',
@@ -49,7 +48,7 @@ export default class ReviewService implements IReviewService {
     async getUserReviewForFoodItem(data: DeleteFoodReviewDTO): Promise<ReviewDataResponseDTO> {
         try {
             const { userId, orderId, itemId } = data
-            const review = await this.reviewRepository.getUserReviewForFoodItem(userId, orderId, itemId);
+            const review = await this._reviewRepository.getUserReviewForFoodItem(userId, orderId, itemId);
 
             if (!review) {
                 return { success: false, message: 'Review not found' };
@@ -68,7 +67,7 @@ export default class ReviewService implements IReviewService {
 
     async getFoodReviews(data: GetFoodReviewDTO): Promise<GetFoodReviewResponseDTO> {
         try {
-            const reviewDatas = await this.reviewRepository.getFoodReview(data.dishId)
+            const reviewDatas = await this._reviewRepository.getFoodReview(data.dishId)
             if (!reviewDatas) {
                 return { success: false, message: 'No Data found' }
             }

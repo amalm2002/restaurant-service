@@ -7,18 +7,17 @@ import { FetchOnlineStatusResponseDTO, UpdateOnlineStatusDTO, UpdateOnlineStatus
 import { GetRestaurantDataByIdDTO, GetRestaurantDataByIdResponseDTO } from '../../dto/restaurant/get-restaurant-by-id.dto';
 
 export default class LoginService implements ILoginService {
-    private restaurantRepository: IRestaurantRepository;
-    private authService: IAuthService;
 
-    constructor(restaurantRepository: IRestaurantRepository, authService: IAuthService) {
-        this.restaurantRepository = restaurantRepository;
-        this.authService = authService;
-    }
+
+    constructor(
+        private readonly _restaurantRepository: IRestaurantRepository,
+        private readonly _authService: IAuthService
+    ) { }
 
     private async handleLogin(restaurant: HandleLoginFuctionDTO): Promise<HandleLoginFuctionReturnDataDTO> {
         const role = 'Restaurant';
-        const token = await this.authService.createToken(restaurant._id.toString(), '15m', 'Restaurant');
-        const refreshToken = await this.authService.createToken(restaurant._id.toString(), '7d', 'Restaurant');
+        const token = await this._authService.createToken(restaurant._id.toString(), '15m', 'Restaurant');
+        const refreshToken = await this._authService.createToken(restaurant._id.toString(), '7d', 'Restaurant');
 
         const isRejected = restaurant.rejectionReason ? true : false;
 
@@ -40,7 +39,7 @@ export default class LoginService implements ILoginService {
     async loginCheckRestaurant(data: LoginDTO): Promise<LoginCheckRestaurantResponse> {
         try {
             const { email, mobile } = data;
-            const response = (await this.restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
+            const response = (await this._restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
 
             if (!response) {
                 return { message: 'No restaurant found' };
@@ -67,7 +66,7 @@ export default class LoginService implements ILoginService {
         try {
             const { restaurant_id, isOnline } = data
             const restaurantId = restaurant_id
-            const restaurant = await this.restaurantRepository.updateOnlineStatus(restaurantId, isOnline);
+            const restaurant = await this._restaurantRepository.updateOnlineStatus(restaurantId, isOnline);
             if (typeof restaurant === 'string') {
                 return { message: 'Failed to update online status', error: restaurant };
             }
@@ -87,7 +86,7 @@ export default class LoginService implements ILoginService {
 
     async fetchOnlineStatus(restaurantId: string): Promise<FetchOnlineStatusResponseDTO> {
         try {
-            const response = await this.restaurantRepository.fetchOnlineStatus(restaurantId);
+            const response = await this._restaurantRepository.fetchOnlineStatus(restaurantId);
             if (typeof response === 'string') {
                 return { error: response };
             }
@@ -101,7 +100,7 @@ export default class LoginService implements ILoginService {
     async getRestaurantDataById(data: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResponseDTO> {
         try {
             const { restaurantId } = data
-            const response = await this.restaurantRepository.getRestaurantDataById(restaurantId)
+            const response = await this._restaurantRepository.getRestaurantDataById(restaurantId)
             return response
         } catch (error) {
             console.log('error on get the restaurnt data by id');

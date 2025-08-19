@@ -9,18 +9,6 @@ export default class AdminRepository extends BaseRepository<RestaurantInterface>
         super(Restaurant);
     }
 
-    // async getAllRestaurants(data: void): Promise<RestaurantInterface[] | string> {
-    //     try {
-    //         const restaurantData: RestaurantInterface[] = await Restaurant.find({
-    //             restaurantDocuments: { $exists: true },
-    //             location: { $exists: true },
-    //         });
-    //         return restaurantData;
-    //     } catch (error) {
-    //         return (error as Error).message;
-    //     }
-    // }
-
     async getAllRestaurants(data: GetAllRestaurantsSearchAndFilterDTO): Promise<RestaurantInterface[] | string> {
         try {
             const andConditions: any[] = [

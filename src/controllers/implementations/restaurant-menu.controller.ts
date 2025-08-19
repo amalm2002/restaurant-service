@@ -1,6 +1,6 @@
 import { IRestaurantMenuController } from '../interfaces/restaurant-menu.controller.interface';
 import { IRestaurantMenuService } from '../../services/interfaces/restaurant-menu.service.interface';
-import { CartItemDTO, MenuItemDTO, MenuItemResponseDTO } from '../../dto/menu/menu-item.dto';
+import { MenuItemDTO, MenuItemResponseDTO } from '../../dto/menu/menu-item.dto';
 import { VariantResponseDTO } from '../../dto/menu/variant.dto';
 import { RestaurantMenuItemResponseDTO } from '../../dto/menu/get-all-restaurant.menu.dto';
 import { SortedMenuItemResponseDTO, SortMenuDTO } from '../../dto/menu/sort-menu.dto';
@@ -14,15 +14,15 @@ import {
 } from '../../dto/menu/update-quantity.dto';
 
 export default class RestaurantMenuController implements IRestaurantMenuController {
-    private menuService: IRestaurantMenuService;
 
-    constructor(menuService: IRestaurantMenuService) {
-        this.menuService = menuService;
-    }
+    constructor(
+        private readonly _menuService: IRestaurantMenuService
+
+    ) { }
 
     async addMenuItems(data: MenuItemDTO): Promise<MenuItemResponseDTO> {
         try {
-            const result = await this.menuService.addMenuItem(data);
+            const result = await this._menuService.addMenuItem(data);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -31,7 +31,7 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     async getAllVariants(restaurantId: string): Promise<VariantResponseDTO[] | { error: string }> {
         try {
-            const result = await this.menuService.getAllVariants(restaurantId);
+            const result = await this._menuService.getAllVariants(restaurantId);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -40,7 +40,7 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     async getAllMenuData(restaurantId: string, search?: string, category?: string): Promise<MenuItemResponseDTO[] | { error: string }> {
         try {
-            const result = await this.menuService.getAllMenuData(restaurantId);
+            const result = await this._menuService.getAllMenuData(restaurantId);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -49,7 +49,7 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     async getSpecificMenuData(menuItemId: string): Promise<MenuItemResponseDTO | { error: string }> {
         try {
-            const result = await this.menuService.getSpecificMenu(menuItemId);
+            const result = await this._menuService.getSpecificMenu(menuItemId);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -58,7 +58,7 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     async editMenuItems(data: MenuItemDTO): Promise<MenuItemResponseDTO> {
         try {
-            const result = await this.menuService.editMenuItems(data);
+            const result = await this._menuService.editMenuItems(data);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -67,7 +67,7 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     async softDeleteMenu(menuItemId: string): Promise<MenuItemResponseDTO | { message: string }> {
         try {
-            const result = await this.menuService.softDeleteMenu(menuItemId);
+            const result = await this._menuService.softDeleteMenu(menuItemId);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -76,7 +76,7 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     async getAllRestaurantMenus(data: void): Promise<RestaurantMenuItemResponseDTO[] | { error: string }> {
         try {
-            const result = await this.menuService.getAllRestaurantMenus(data);
+            const result = await this._menuService.getAllRestaurantMenus(data);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -85,7 +85,7 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     async sortAllMenus(data: SortMenuDTO): Promise<SortedMenuItemResponseDTO[] | { error: string }> {
         try {
-            const result = await this.menuService.sortAllMenus(data);
+            const result = await this._menuService.sortAllMenus(data);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -94,7 +94,7 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     async updateMenuQuantity(data: UpdateMenuQuantityDTO): Promise<UpdateMenuQuantityResponseDTO> {
         try {
-            const result = await this.menuService.updateMenuQuantity(data)
+            const result = await this._menuService.updateMenuQuantity(data)
             return result
         } catch (error) {
             return { error: (error as Error).message };
@@ -103,7 +103,7 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     async cancelOrderQuantityUpdation(refundData: CancelOrderQuantityUpdationDTO): Promise<CancelOrderQuantityUpdationResponseDTO> {
         try {
-            const result = await this.menuService.cancelOrderQuantityUpdations(refundData)
+            const result = await this._menuService.cancelOrderQuantityUpdations(refundData)
             return result
         } catch (error) {
             return { success: false, message: 'somthing went wrong', error: (error as Error).message };
@@ -112,7 +112,7 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     async checkStockAvailability(data: any): Promise<any> {
         try {
-            const result = await this.menuService.checkStockAvailability(data)
+            const result = await this._menuService.checkStockAvailability(data)
             return result
         } catch (error) {
             return { success: false, message: 'somthing went wrong', error: (error as Error).message };
@@ -121,7 +121,7 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     async decrementStock(data: DecrementStockDTO): Promise<DecrementStockResponseDTO> {
         try {
-            const result = await this.menuService.decrementStock(data)
+            const result = await this._menuService.decrementStock(data)
             return result
         } catch (error) {
             return { success: false, message: 'somthing went wrong', error: (error as Error).message };

@@ -29,9 +29,9 @@ import ReviewRepository from '../../repositories/implementations/review.reposito
 import ReviewController from '../../controllers/implementations/review.controller';
 
 export default class Consumer {
-    private channel: Channel;
-    private rpcQueue: string;
-    private controllers: {
+    private readonly _channel: Channel;
+    private readonly _rpcQueue: string;
+    private readonly _controllers: {
         registrationController: IRegistrationController;
         loginController: ILoginController;
         adminController: IRestaurantDisplayController;
@@ -41,8 +41,8 @@ export default class Consumer {
     };
 
     constructor(channel: Channel, rpcQueue: string) {
-        this.channel = channel;
-        this.rpcQueue = rpcQueue;
+        this._channel = channel;
+        this._rpcQueue = rpcQueue;
 
         const authService = new AuthService();
         const nodemailerService = new NodemailerService();
@@ -61,7 +61,7 @@ export default class Consumer {
         const subscriptionService = new SubscriptionService(subscriptionPlanRepo, transactionRepo);
         const reviewService = new ReviewService(reviewRepo)
 
-        this.controllers = {
+        this._controllers = {
             registrationController: new RegistrationController(registrationService, authService, nodemailerService, otpService),
             loginController: new LoginController(loginService),
             adminController: new RestaurantDisplayController(restaurantDisplayService, nodemailerService, otpService),
@@ -74,8 +74,8 @@ export default class Consumer {
     async consumeMessage() {
         console.log('Ready to consume messages...');
 
-        this.channel.consume(
-            this.rpcQueue,
+        this._channel.consume(
+            this._rpcQueue,
             async (message: ConsumeMessage | null) => {
                 if (!message) return;
 
@@ -84,18 +84,18 @@ export default class Consumer {
 
                 if (!correlationId || !replyTo) {
                     console.log('Missing correlationId or replyTo.');
-                    this.channel.ack(message);
+                    this._channel.ack(message);
                     return;
                 }
 
                 try {
                     const content = JSON.parse(message.content.toString());
-                    await MessageHandler.handle(operation, content, correlationId, replyTo, this.controllers);
-                    this.channel.ack(message);
+                    await MessageHandler.handle(operation, content, correlationId, replyTo, this._controllers);
+                    this._channel.ack(message);
                 } catch (err) {
                     console.error('Error handling message:', err);
-                    // this.channel.nack(message, false, true);
-                    this.channel.nack(message, false, false);
+                    // this._channel.nack(message, false, true);
+                    this._channel.nack(message, false, false);
                 }
             },
             { noAck: false }

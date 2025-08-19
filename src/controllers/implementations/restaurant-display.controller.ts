@@ -7,26 +7,18 @@ import { GetAllRestaurantsResponseDTO, GetAllRestaurantsSearchAndFilterDTO } fro
 import { GetRestaurantDataByIdDTO, GetRestaurantDataByIdResDTO } from '../../dto/restaurant/get-restaurant-by-id.dto';
 import { VerifyRestaurantDocumentDTO } from '../../dto/restaurant/verify-document.dto';
 import { RejectRestaurantDocumentDTO } from '../../dto/restaurant/reject-document.dto';
-import { RegistrationResponseDTO } from '../../dto/restaurant/restaurant.dto';
 
 export default class RestaurantDisplayController implements IRestaurantDisplayController {
-    private restaurantDisplayService: IRestaurantDisplayService;
-    private nodemailerService: INodemailerService;
-    private otpService: IOtpService;
 
     constructor(
-        restaurantDisplayService: IRestaurantDisplayService,
-        nodemailerService: INodemailerService,
-        otpService: IOtpService
-    ) {
-        this.restaurantDisplayService = restaurantDisplayService;
-        this.nodemailerService = nodemailerService;
-        this.otpService = otpService;
-    }
+        private readonly _restaurantDisplayService: IRestaurantDisplayService,
+        private readonly _nodemailerService: INodemailerService,
+        private readonly _otpService: IOtpService
+    ) { }
 
     async getAllRestaurantsData(data: GetAllRestaurantsSearchAndFilterDTO): Promise<GetAllRestaurantsResponseDTO> {
         try {
-            const result = await this.restaurantDisplayService.getAllRestaurants(data);
+            const result = await this._restaurantDisplayService.getAllRestaurants(data);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -36,7 +28,7 @@ export default class RestaurantDisplayController implements IRestaurantDisplayCo
     async findRestaurantById(data: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResDTO> {
         try {
             // const { restaurantId } = data;
-            const result = await this.restaurantDisplayService.findRestaurantById(data);
+            const result = await this._restaurantDisplayService.findRestaurantById(data);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -46,11 +38,11 @@ export default class RestaurantDisplayController implements IRestaurantDisplayCo
     async verifyRestaurantDocument(data: VerifyRestaurantDocumentDTO): Promise<any> {
         try {
             // const { restaurantId } = data;
-            const result = await this.restaurantDisplayService.verifyRestaurantDocuments(data);
+            const result = await this._restaurantDisplayService.verifyRestaurantDocuments(data);
 
             if (typeof result === 'object' && result !== null && 'email' in result && result.isVerified) {
                 await OtpSendingUtil.sendVerifyMail(result.email as string,
-                    this.nodemailerService,
+                    this._nodemailerService,
                 );
             }
             return { message: 'success', response: result };
@@ -62,8 +54,7 @@ export default class RestaurantDisplayController implements IRestaurantDisplayCo
     async rejectedRestaurantDocuments(data: RejectRestaurantDocumentDTO): Promise<any> {
         try {
             // const { restaurantId, rejectionReason } = data;
-            const result = await this.restaurantDisplayService.rejectRestaurantDocuments(data);
-            // const isRejected = !!(result && typeof result !== 'string' && 'rejectionReason' in result && result.rejectionReason);
+            const result = await this._restaurantDisplayService.rejectRestaurantDocuments(data);
             let isRejected = false;
             if (
                 result &&
@@ -74,7 +65,7 @@ export default class RestaurantDisplayController implements IRestaurantDisplayCo
                 result.rejectionReason
             ) {
                 isRejected = true;
-                await OtpSendingUtil.sendRejectedDocumetsMail(result.email, result.rejectionReason, this.nodemailerService);
+                await OtpSendingUtil.sendRejectedDocumetsMail(result.email, result.rejectionReason, this._nodemailerService);
             }
             return { message: 'success', result, isRejected };
         } catch (error) {
