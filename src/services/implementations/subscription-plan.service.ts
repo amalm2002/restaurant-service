@@ -350,7 +350,11 @@ export default class SubscriptionService implements ISubscriptionService {
             if (data.startDate && data.endDate) {
                 query.createdAt = { $gte: new Date(data.startDate), $lte: new Date(data.endDate) };
             }
-            const payments = await this._transactionRepository.getRestaurantChartData(query);
+            const payments = await this._transactionRepository.getRestaurantChartData(query, {
+                sortBy: data.sortBy,
+                order: data.order,
+                limit: data.limit,
+            });
             return {
                 message: 'success',
                 response: payments,

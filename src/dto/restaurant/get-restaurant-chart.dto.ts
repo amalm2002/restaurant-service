@@ -6,5 +6,10 @@ export interface GetRestaurantChartDataDTO {
 
 export interface GetRestaurantChartDataRequestDTO {
     startDate?: string;
-    endDate?: string
+    endDate?: string;
+    sortBy?: 'orderVolume' | 'revenue';
+    order?: 'asc' | 'desc';
+    limit?: number;
 }
+
+

@@ -153,8 +153,16 @@ export default class TransactionRepository extends BaseRepository<PaymentInterfa
         }
     }
 
-    async getRestaurantChartData(query: any): Promise<{ restaurantName: string; orderVolume: number; revenue: number }[]> {
+    async getRestaurantChartData(query: any, options: { sortBy?: string; order?: 'asc' | 'desc'; limit?: number } = {}): Promise<{ restaurantId: string; restaurantName: string; orderVolume: number; revenue: number }[]> {
         try {
+            const sortBy = options.sortBy || 'revenue';
+            const orderNum = options.order === 'asc' ? 1 : -1;
+            const limitNum = options.limit || 10;
+
+            if (!['orderVolume', 'revenue'].includes(sortBy)) {
+                throw new Error('Invalid sortBy field');
+            }
+
             const payments = await Payment.aggregate([
                 { $match: query },
                 {
@@ -164,6 +172,8 @@ export default class TransactionRepository extends BaseRepository<PaymentInterfa
                         revenue: { $sum: '$amount' },
                     },
                 },
+                { $sort: { [sortBy]: orderNum } },
+                { $limit: limitNum },
                 {
                     $lookup: {
                         from: 'restaurants',
@@ -175,6 +185,7 @@ export default class TransactionRepository extends BaseRepository<PaymentInterfa
                 { $unwind: '$restaurant' },
                 {
                     $project: {
+                        restaurantId: '$_id',
                         restaurantName: '$restaurant.restaurantName',
                         orderVolume: 1,
                         revenue: 1,
