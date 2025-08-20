@@ -16,29 +16,29 @@ export default class RestaurantDisplayController implements IRestaurantDisplayCo
         private readonly _otpService: IOtpService
     ) { }
 
-    async getAllRestaurantsData(data: GetAllRestaurantsSearchAndFilterDTO): Promise<GetAllRestaurantsResponseDTO> {
+    async getAllRestaurantsData(searchAndFilter: GetAllRestaurantsSearchAndFilterDTO): Promise<GetAllRestaurantsResponseDTO> {
         try {
-            const result = await this._restaurantDisplayService.getAllRestaurants(data);
+            const result = await this._restaurantDisplayService.getAllRestaurants(searchAndFilter);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
         }
     }
 
-    async findRestaurantById(data: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResDTO> {
+    async findRestaurantById(restaurantQuery: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResDTO> {
         try {
             // const { restaurantId } = data;
-            const result = await this._restaurantDisplayService.findRestaurantById(data);
+            const result = await this._restaurantDisplayService.findRestaurantById(restaurantQuery);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
         }
     }
 
-    async verifyRestaurantDocument(data: VerifyRestaurantDocumentDTO): Promise<any> {
+    async verifyRestaurantDocument(verificationRequest: VerifyRestaurantDocumentDTO): Promise<any> {
         try {
             // const { restaurantId } = data;
-            const result = await this._restaurantDisplayService.verifyRestaurantDocuments(data);
+            const result = await this._restaurantDisplayService.verifyRestaurantDocuments(verificationRequest);
 
             if (typeof result === 'object' && result !== null && 'email' in result && result.isVerified) {
                 await OtpSendingUtil.sendVerifyMail(result.email as string,
@@ -51,10 +51,10 @@ export default class RestaurantDisplayController implements IRestaurantDisplayCo
         }
     }
 
-    async rejectedRestaurantDocuments(data: RejectRestaurantDocumentDTO): Promise<any> {
+    async rejectedRestaurantDocuments(rejectionRequest: RejectRestaurantDocumentDTO): Promise<any> {
         try {
             // const { restaurantId, rejectionReason } = data;
-            const result = await this._restaurantDisplayService.rejectRestaurantDocuments(data);
+            const result = await this._restaurantDisplayService.rejectRestaurantDocuments(rejectionRequest);
             let isRejected = false;
             if (
                 result &&

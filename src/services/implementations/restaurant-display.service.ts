@@ -15,18 +15,18 @@ export default class RestaurantDisplayService implements IRestaurantDisplayServi
         private readonly _nodemailerService: INodemailerService
     ) { }
 
-    async getAllRestaurants(data: GetAllRestaurantsSearchAndFilterDTO): Promise<GetAllRestaurantsResponseDTO> {
+    async getAllRestaurants(searchAndFilter: GetAllRestaurantsSearchAndFilterDTO): Promise<GetAllRestaurantsResponseDTO> {
         try {
-            const response = await this._adminRepository.getAllRestaurants(data);
+            const response = await this._adminRepository.getAllRestaurants(searchAndFilter);
             return { message: 'success', response };
         } catch (error) {
             return { message: (error as Error).message };
         }
     }
 
-    async findRestaurantById(data: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResDTO> {
+    async findRestaurantById(restaurantQuery: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResDTO> {
         try {
-            const { restaurantId } = data
+            const { restaurantId } = restaurantQuery
             const response = await this._adminRepository.findRestaurantById(restaurantId);
             return { message: 'success', response: response };
         } catch (error) {
@@ -34,9 +34,9 @@ export default class RestaurantDisplayService implements IRestaurantDisplayServi
         }
     }
 
-    async verifyRestaurantDocuments(data: VerifyRestaurantDocumentDTO): Promise<any> {
+    async verifyRestaurantDocuments(verificationRequest: VerifyRestaurantDocumentDTO): Promise<any> {
         try {
-            const { restaurantId } = data
+            const { restaurantId } = verificationRequest
             const response = await this._adminRepository.verifyRestaurantDocuments(restaurantId);
             return response;
         } catch (error) {
@@ -44,9 +44,9 @@ export default class RestaurantDisplayService implements IRestaurantDisplayServi
         }
     }
 
-    async rejectRestaurantDocuments(data: RejectRestaurantDocumentDTO): Promise<RegistrationResponseDTO | string | { message: string }> {
+    async rejectRestaurantDocuments(rejectionRequest: RejectRestaurantDocumentDTO): Promise<RegistrationResponseDTO | string | { message: string }> {
         try {
-            const { restaurantId, rejectionReason } = data
+            const { restaurantId, rejectionReason } = rejectionRequest
             const response = await this._adminRepository.rejectRestaurantDocuments(restaurantId, rejectionReason);
             return response;
         } catch (error) {

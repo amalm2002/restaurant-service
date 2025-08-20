@@ -3,8 +3,8 @@ import { DeleteFoodReviewDTO, DeleteFoodReviewResponseDTO } from "../../dto/revi
 import { GetFoodReviewDTO, GetFoodReviewResponseDTO } from "../../dto/review/get-food-review.dto";
 
 export interface IReviewController {
-    addFoodReview(data: ReviewDataDTO): Promise<ReviewDataResponseDTO>;
-    deleteFoodReview(data: DeleteFoodReviewDTO): Promise<DeleteFoodReviewResponseDTO>;
-    getUserReviewForFoodItem(data: DeleteFoodReviewDTO): Promise<ReviewDataResponseDTO>;
-    getFoodReviews(data: GetFoodReviewDTO): Promise<GetFoodReviewResponseDTO>
+    addFoodReview(reviewData: ReviewDataDTO): Promise<ReviewDataResponseDTO>;
+    deleteFoodReview(deleteReviewData: DeleteFoodReviewDTO): Promise<DeleteFoodReviewResponseDTO>;
+    getUserReviewForFoodItem(userReviewData: DeleteFoodReviewDTO): Promise<ReviewDataResponseDTO>;
+    getFoodReviews(getReviewQuery: GetFoodReviewDTO): Promise<GetFoodReviewResponseDTO>
 }

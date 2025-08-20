@@ -20,9 +20,9 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
 
     ) { }
 
-    async addMenuItems(data: MenuItemDTO): Promise<MenuItemResponseDTO> {
+    async addMenuItems(newMenuItem: MenuItemDTO): Promise<MenuItemResponseDTO> {
         try {
-            const result = await this._menuService.addMenuItem(data);
+            const result = await this._menuService.addMenuItem(newMenuItem);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -56,9 +56,9 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
         }
     }
 
-    async editMenuItems(data: MenuItemDTO): Promise<MenuItemResponseDTO> {
+    async editMenuItems(updatedMenuItem: MenuItemDTO): Promise<MenuItemResponseDTO> {
         try {
-            const result = await this._menuService.editMenuItems(data);
+            const result = await this._menuService.editMenuItems(updatedMenuItem);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
@@ -83,45 +83,45 @@ export default class RestaurantMenuController implements IRestaurantMenuControll
         }
     }
 
-    async sortAllMenus(data: SortMenuDTO): Promise<SortedMenuItemResponseDTO[] | { error: string }> {
+    async sortAllMenus(sortOptions: SortMenuDTO): Promise<SortedMenuItemResponseDTO[] | { error: string }> {
         try {
-            const result = await this._menuService.sortAllMenus(data);
+            const result = await this._menuService.sortAllMenus(sortOptions);
             return result;
         } catch (error) {
             return { error: (error as Error).message };
         }
     }
 
-    async updateMenuQuantity(data: UpdateMenuQuantityDTO): Promise<UpdateMenuQuantityResponseDTO> {
+    async updateMenuQuantity(quantityUpdate: UpdateMenuQuantityDTO): Promise<UpdateMenuQuantityResponseDTO> {
         try {
-            const result = await this._menuService.updateMenuQuantity(data)
+            const result = await this._menuService.updateMenuQuantity(quantityUpdate)
             return result
         } catch (error) {
             return { error: (error as Error).message };
         }
     }
 
-    async cancelOrderQuantityUpdation(refundData: CancelOrderQuantityUpdationDTO): Promise<CancelOrderQuantityUpdationResponseDTO> {
+    async cancelOrderQuantityUpdation(cancelUpdate: CancelOrderQuantityUpdationDTO): Promise<CancelOrderQuantityUpdationResponseDTO> {
         try {
-            const result = await this._menuService.cancelOrderQuantityUpdations(refundData)
+            const result = await this._menuService.cancelOrderQuantityUpdations(cancelUpdate)
             return result
         } catch (error) {
             return { success: false, message: 'somthing went wrong', error: (error as Error).message };
         }
     }
 
-    async checkStockAvailability(data: any): Promise<any> {
+    async checkStockAvailability(stockCheck: any): Promise<any> {
         try {
-            const result = await this._menuService.checkStockAvailability(data)
+            const result = await this._menuService.checkStockAvailability(stockCheck)
             return result
         } catch (error) {
             return { success: false, message: 'somthing went wrong', error: (error as Error).message };
         }
     }
 
-    async decrementStock(data: DecrementStockDTO): Promise<DecrementStockResponseDTO> {
+    async decrementStock(stockDecrement: DecrementStockDTO): Promise<DecrementStockResponseDTO> {
         try {
-            const result = await this._menuService.decrementStock(data)
+            const result = await this._menuService.decrementStock(stockDecrement)
             return result
         } catch (error) {
             return { success: false, message: 'somthing went wrong', error: (error as Error).message };

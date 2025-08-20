@@ -3,10 +3,10 @@ import { DocumentsDTO, DocumentsUpdateResponseDTO, ResubDocsDTO, ResubDocsRespon
 import { LocationDTO, LocationUpdateResponseDTO } from '../../dto/restaurant/location.dto';
 
 export interface IRegistrationController {
-    register(data: RegistrationDTO): Promise<RestaurantRegistrationResponseDTO>;
-    checkRestaurant(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO>;
-    restaurantResendOtp(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO>;
-    restaurantDocumentUpdate(data: DocumentsDTO): Promise<DocumentsUpdateResponseDTO>;
-    restaurantLocation(data: LocationDTO): Promise<LocationUpdateResponseDTO>;
-    resubmitRestaurantDocuments(data: ResubDocsDTO): Promise<ResubDocsResponseDTO>;
+    register(registrationDetails: RegistrationDTO): Promise<RestaurantRegistrationResponseDTO>;
+    checkRestaurant(checkRequest: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO>;
+    restaurantResendOtp(resendOtpRequest: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO>;
+    restaurantDocumentUpdate(documentUpdate: DocumentsDTO): Promise<DocumentsUpdateResponseDTO>;
+    restaurantLocation(locationUpdate: LocationDTO): Promise<LocationUpdateResponseDTO>;
+    resubmitRestaurantDocuments(resubmissionRequest: ResubDocsDTO): Promise<ResubDocsResponseDTO>;
 }

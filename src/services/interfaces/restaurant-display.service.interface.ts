@@ -5,8 +5,8 @@ import { RegistrationResponseDTO } from "../../dto/restaurant/restaurant.dto";
 import { VerifyRestaurantDocumentDTO, VerifyRestaurantDocumentResponseDTO } from "../../dto/restaurant/verify-document.dto";
 
 export interface IRestaurantDisplayService {
-    getAllRestaurants(data: GetAllRestaurantsSearchAndFilterDTO): Promise<GetAllRestaurantsResponseDTO>;
-    findRestaurantById(data: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResDTO>;
-    verifyRestaurantDocuments(data: VerifyRestaurantDocumentDTO): Promise<any>;
-    rejectRestaurantDocuments(data: RejectRestaurantDocumentDTO): Promise<RegistrationResponseDTO | string | { message: string }>;
+    getAllRestaurants(searchAndFilter: GetAllRestaurantsSearchAndFilterDTO): Promise<GetAllRestaurantsResponseDTO>;
+    findRestaurantById(restaurantQuery: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResDTO>;
+    verifyRestaurantDocuments(verificationRequest: VerifyRestaurantDocumentDTO): Promise<any>;
+    rejectRestaurantDocuments(rejectionRequest: RejectRestaurantDocumentDTO): Promise<RegistrationResponseDTO | string | { message: string }>;
 }

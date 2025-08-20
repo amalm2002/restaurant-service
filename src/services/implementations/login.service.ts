@@ -36,9 +36,9 @@ export default class LoginService implements ILoginService {
         };
     }
 
-    async loginCheckRestaurant(data: LoginDTO): Promise<LoginCheckRestaurantResponse> {
+    async loginCheckRestaurant(loginCredentials: LoginDTO): Promise<LoginCheckRestaurantResponse> {
         try {
-            const { email, mobile } = data;
+            const { email, mobile } = loginCredentials;
             const response = (await this._restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
 
             if (!response) {
@@ -62,9 +62,9 @@ export default class LoginService implements ILoginService {
         }
     }
 
-    async updateOnlineStatus(data: UpdateOnlineStatusDTO): Promise<UpdateOnlineStatusResponseDTO> {
+    async updateOnlineStatus(statusUpdate: UpdateOnlineStatusDTO): Promise<UpdateOnlineStatusResponseDTO> {
         try {
-            const { restaurant_id, isOnline } = data
+            const { restaurant_id, isOnline } = statusUpdate
             const restaurantId = restaurant_id
             const restaurant = await this._restaurantRepository.updateOnlineStatus(restaurantId, isOnline);
             if (typeof restaurant === 'string') {
@@ -97,9 +97,9 @@ export default class LoginService implements ILoginService {
         }
     }
 
-    async getRestaurantDataById(data: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResponseDTO> {
+    async getRestaurantDataById(restaurantQuery: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdResponseDTO> {
         try {
-            const { restaurantId } = data
+            const { restaurantId } = restaurantQuery
             const response = await this._restaurantRepository.getRestaurantDataById(restaurantId)
             return response
         } catch (error) {

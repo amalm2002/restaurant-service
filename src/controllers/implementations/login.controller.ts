@@ -10,9 +10,9 @@ export default class LoginController implements ILoginController {
         private readonly _loginService: ILoginService
     ) { }
 
-    async checkLoginRestaurant(data: LoginDTO): Promise<LoginCheckRestaurantResponse> {
+    async checkLoginRestaurant(loginCredentials: LoginDTO): Promise<LoginCheckRestaurantResponse> {
         try {
-            const { email, mobile } = data;
+            const { email, mobile } = loginCredentials;
             const response = await this._loginService.loginCheckRestaurant({ email, mobile });
             return response;
         } catch (error) {
@@ -20,10 +20,10 @@ export default class LoginController implements ILoginController {
         }
     }
 
-    async updateOnlineStatus(data: UpdateOnlineStatusDTO): Promise<UpdateOnlineStatusResponseDTO> {
+    async updateOnlineStatus(statusUpdate: UpdateOnlineStatusDTO): Promise<UpdateOnlineStatusResponseDTO> {
         try {
             // const { restaurant_id, isOnline } = data;
-            const response = await this._loginService.updateOnlineStatus(data);
+            const response = await this._loginService.updateOnlineStatus(statusUpdate);
             return response;
         } catch (error) {
             return { error: (error as Error).message };
@@ -39,10 +39,10 @@ export default class LoginController implements ILoginController {
         }
     }
 
-    async getRestaurantDataById(data: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdControllerResponseDTO> {
+    async getRestaurantDataById(restaurantQuery: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdControllerResponseDTO> {
         try {
             // const restaurant_id = data.restaurantId;
-            const response = await this._loginService.getRestaurantDataById(data);
+            const response = await this._loginService.getRestaurantDataById(restaurantQuery);
             if (!response || response.error) {
                 return {
                     success: false,

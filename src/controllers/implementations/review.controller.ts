@@ -11,9 +11,9 @@ export default class ReviewController implements IReviewController {
         private readonly _reviewService: IReviewService
     ) { }
 
-    async addFoodReview(data: ReviewDataDTO): Promise<ReviewDataResponseDTO> {
+    async addFoodReview(reviewData: ReviewDataDTO): Promise<ReviewDataResponseDTO> {
         try {
-            const response = await this._reviewService.addFoodreview(data)
+            const response = await this._reviewService.addFoodreview(reviewData)
             return response
         } catch (error) {
             console.log('Error in addNewSubscriptionPlan:', error);
@@ -21,15 +21,15 @@ export default class ReviewController implements IReviewController {
         }
     }
 
-    async deleteFoodReview(data: DeleteFoodReviewDTO): Promise<DeleteFoodReviewResponseDTO> {
-        return await this._reviewService.deleteFoodReview(data);
+    async deleteFoodReview(deleteReviewData: DeleteFoodReviewDTO): Promise<DeleteFoodReviewResponseDTO> {
+        return await this._reviewService.deleteFoodReview(deleteReviewData);
     }
 
-    async getUserReviewForFoodItem(data: DeleteFoodReviewDTO): Promise<ReviewDataResponseDTO> {
-        return await this._reviewService.getUserReviewForFoodItem(data);
+    async getUserReviewForFoodItem(userReviewData: DeleteFoodReviewDTO): Promise<ReviewDataResponseDTO> {
+        return await this._reviewService.getUserReviewForFoodItem(userReviewData);
     }
 
-    async getFoodReviews(data: GetFoodReviewDTO): Promise<GetFoodReviewResponseDTO> {
-        return await this._reviewService.getFoodReviews(data)
+    async getFoodReviews(getReviewQuery: GetFoodReviewDTO): Promise<GetFoodReviewResponseDTO> {
+        return await this._reviewService.getFoodReviews(getReviewQuery)
     }
 }

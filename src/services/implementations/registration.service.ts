@@ -17,9 +17,9 @@ export default class RegistrationService implements IRegistrationService {
         private readonly _authService: IAuthService,
     ) { }
 
-    async register(data: RegistrationDTO): Promise<RestaurantRegistrationResponseDTO> {
+    async register(registrationDetails: RegistrationDTO): Promise<RestaurantRegistrationResponseDTO> {
         try {
-            const response = await this._restaurantRepository.saveRestaurant(data);
+            const response = await this._restaurantRepository.saveRestaurant(registrationDetails);
             if (typeof response !== 'string' && response.email) {
                 return { message: 'Success', restaurant_id: response._id };
             }
@@ -30,8 +30,8 @@ export default class RegistrationService implements IRegistrationService {
         }
     }
 
-    async checkRestaurant(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
-        const { email, mobile } = data;
+    async checkRestaurant(checkRequest: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
+        const { email, mobile } = checkRequest;
         try {
             const response = (await this._restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
 
@@ -63,8 +63,8 @@ export default class RegistrationService implements IRegistrationService {
         }
     }
 
-    async restaurantResendOtp(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
-        const { email, mobile } = data;
+    async restaurantResendOtp(resendOtpRequest: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
+        const { email, mobile } = resendOtpRequest;
         try {
             const response = (await this._restaurantRepository.findRestaurant(email, mobile)) as RestaurantInterface;
 
@@ -107,9 +107,9 @@ export default class RegistrationService implements IRegistrationService {
         }
     }
 
-    async restaurantDocumentUpdate(data: DocumentsDTO): Promise<DocumentsUpdateResponseDTO> {
+    async restaurantDocumentUpdate(documentUpdate: DocumentsDTO): Promise<DocumentsUpdateResponseDTO> {
         try {
-            const response = await this._restaurantRepository.restaurantDocumentsUpdate(data);
+            const response = await this._restaurantRepository.restaurantDocumentsUpdate(documentUpdate);
             if (response) {
                 return { message: 'Success', restaurantResponse: response };
             } else {
@@ -121,9 +121,9 @@ export default class RegistrationService implements IRegistrationService {
         }
     }
 
-    async restaurantLocation(data: LocationDTO): Promise<LocationUpdateResponseDTO> {
+    async restaurantLocation(locationUpdate: LocationDTO): Promise<LocationUpdateResponseDTO> {
         try {
-            const result = await this._restaurantRepository.restaurantLocationUpdate(data);
+            const result = await this._restaurantRepository.restaurantLocationUpdate(locationUpdate);
             if (!result.success) {
                 return {
                     success: false,
@@ -144,9 +144,9 @@ export default class RegistrationService implements IRegistrationService {
         }
     }
 
-    async resubmitDocuments(data: ResubDocsDTO): Promise<ResubDocsResponseDTO> {
+    async resubmitDocuments(resubmissionRequest: ResubDocsDTO): Promise<ResubDocsResponseDTO> {
         try {
-            const response = await this._restaurantRepository.resubmitRestaurantDocuments(data);
+            const response = await this._restaurantRepository.resubmitRestaurantDocuments(resubmissionRequest);
             return { message: 'success', response: response };
         } catch (error) {
             console.log('error on resubmitDocuments service side:', error);

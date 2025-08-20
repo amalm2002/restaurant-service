@@ -3,8 +3,8 @@ import { GetRestaurantDataByIdControllerResponseDTO, GetRestaurantDataByIdDTO } 
 import { FetchOnlineStatusResponseDTO, UpdateOnlineStatusDTO, UpdateOnlineStatusResponseDTO } from '../../dto/restaurant/update-online-status.dto';
 
 export interface ILoginController {
-    checkLoginRestaurant(data: LoginDTO): Promise<LoginCheckRestaurantResponse>;
-    updateOnlineStatus(data: UpdateOnlineStatusDTO): Promise<UpdateOnlineStatusResponseDTO>;
+    checkLoginRestaurant(loginCredentials: LoginDTO): Promise<LoginCheckRestaurantResponse>;
+    updateOnlineStatus(statusUpdate: UpdateOnlineStatusDTO): Promise<UpdateOnlineStatusResponseDTO>;
     fetchOnlineStatus(restaurantId: string): Promise<FetchOnlineStatusResponseDTO>;
-    getRestaurantDataById(data: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdControllerResponseDTO>
+    getRestaurantDataById(restaurantQuery: GetRestaurantDataByIdDTO): Promise<GetRestaurantDataByIdControllerResponseDTO>
 }

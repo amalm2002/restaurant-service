@@ -8,17 +8,17 @@ import { GetRestaurantDataByIdDTO } from '../../dto/restaurant/get-restaurant-by
 import { GetRestaurantChartDataDTO, GetRestaurantChartDataRequestDTO } from '../../dto/restaurant/get-restaurant-chart.dto';
 
 export interface ISubscriptionPlanController {
-    addNewSubscriptionPlan(data: SubscriptionPlanDTO): Promise<SubscriptionPlanControllerResponseDTO>;
+    addNewSubscriptionPlan(subscriptionPlanData: SubscriptionPlanDTO): Promise<SubscriptionPlanControllerResponseDTO>;
     getAllSubscriptionPlan(data: void): Promise<GetAllSubscriptionPlanResponseDTO>;
-    editSubscriptionPlan(data: SubscriptionPlanDTO): Promise<EditSubscriptionPlanResponseDTO>;
-    getAnySubscriptionPlanExist(data: GetSubscriptionPlanExitDTO): Promise<GetSubscriptionPlanExitResponseDTO>;
-    deleteSubscriptionPlan(data: DeleteSubscriptionPlanDTO): Promise<DeleteSubscriptionPlanResponseDTO>;
-    paymentSubscriptionPlan(data: PaymentDTO): Promise<PaymentResponseDTO>;
-    verifyPaymentSubscriptionPlan(data: VerifyPaymentDTO): Promise<VerifyPaymentResponseDTO>;
-    handleFailedPayment(data: FailedPaymentDTO): Promise<FailedPaymentResponseDTO>;
-    retryPayment(data: RetryPaymentDTO): Promise<RetryPaymentResponseDTO>;
-    getTheTransactionHistory(data: GetRestaurantDataByIdDTO): Promise<SubscriptionOrderResponseDTO[] | { error: boolean; message: string }>;
-    getTheTransactionDetails(data: TransactionDetailsDTO): Promise<SubscriptionOrderResponseDTO | { error: boolean; message: string }>;
+    editSubscriptionPlan(updatedSubscriptionPlanData: SubscriptionPlanDTO): Promise<EditSubscriptionPlanResponseDTO>;
+    getAnySubscriptionPlanExist(subscriptionPlanExistQuery: GetSubscriptionPlanExitDTO): Promise<GetSubscriptionPlanExitResponseDTO>;
+    deleteSubscriptionPlan(deleteSubscriptionPlanData: DeleteSubscriptionPlanDTO): Promise<DeleteSubscriptionPlanResponseDTO>;
+    paymentSubscriptionPlan(paymentData: PaymentDTO): Promise<PaymentResponseDTO>;
+    verifyPaymentSubscriptionPlan(verifyPaymentData: VerifyPaymentDTO): Promise<VerifyPaymentResponseDTO>;
+    handleFailedPayment(failedPaymentData: FailedPaymentDTO): Promise<FailedPaymentResponseDTO>;
+    retryPayment(retryPaymentData: RetryPaymentDTO): Promise<RetryPaymentResponseDTO>;
+    getTheTransactionHistory(restaurantTransactionQuery: GetRestaurantDataByIdDTO): Promise<SubscriptionOrderResponseDTO[] | { error: boolean; message: string }>;
+    getTheTransactionDetails(transactionDetailsQuery: TransactionDetailsDTO): Promise<SubscriptionOrderResponseDTO | { error: boolean; message: string }>;
     getAllRestaurantPayments(data: void): Promise<GetAllRestaurantPaymentsDTO>;
-    getRestaurantChartData(data: GetRestaurantChartDataRequestDTO): Promise<GetRestaurantChartDataDTO>;
+    getRestaurantChartData(chartRequest: GetRestaurantChartDataRequestDTO): Promise<GetRestaurantChartDataDTO>;
 }

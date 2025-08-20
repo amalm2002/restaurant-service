@@ -10,9 +10,9 @@ export default class ReviewService implements IReviewService {
         private readonly _reviewRepository: IReviewRepository
     ) { }
 
-    async addFoodreview(data: ReviewDataDTO): Promise<ReviewDataResponseDTO> {
+    async addFoodreview(reviewData: ReviewDataDTO): Promise<ReviewDataResponseDTO> {
         try {
-            const { itemId, rating, comment, orderId, userId, isEdit, userName } = data;
+            const { itemId, rating, comment, orderId, userId, isEdit, userName } = reviewData;
 
             if (rating < 1 || rating > 5) {
                 return { success: false, message: 'Rating must be between 1 and 5' };
@@ -31,9 +31,9 @@ export default class ReviewService implements IReviewService {
         }
     }
 
-    async deleteFoodReview(data: DeleteFoodReviewDTO): Promise<DeleteFoodReviewResponseDTO> {
+    async deleteFoodReview(deleteReviewData: DeleteFoodReviewDTO): Promise<DeleteFoodReviewResponseDTO> {
         try {
-            const { userId, orderId, itemId } = data
+            const { userId, orderId, itemId } = deleteReviewData
             await this._reviewRepository.deleteFoodReview(userId, orderId, itemId);
             return {
                 success: true,
@@ -45,9 +45,9 @@ export default class ReviewService implements IReviewService {
         }
     }
 
-    async getUserReviewForFoodItem(data: DeleteFoodReviewDTO): Promise<ReviewDataResponseDTO> {
+    async getUserReviewForFoodItem(userReviewData: DeleteFoodReviewDTO): Promise<ReviewDataResponseDTO> {
         try {
-            const { userId, orderId, itemId } = data
+            const { userId, orderId, itemId } = userReviewData
             const review = await this._reviewRepository.getUserReviewForFoodItem(userId, orderId, itemId);
 
             if (!review) {
@@ -65,9 +65,9 @@ export default class ReviewService implements IReviewService {
         }
     }
 
-    async getFoodReviews(data: GetFoodReviewDTO): Promise<GetFoodReviewResponseDTO> {
+    async getFoodReviews(getReviewQuery: GetFoodReviewDTO): Promise<GetFoodReviewResponseDTO> {
         try {
-            const reviewDatas = await this._reviewRepository.getFoodReview(data.dishId)
+            const reviewDatas = await this._reviewRepository.getFoodReview(getReviewQuery.dishId)
             if (!reviewDatas) {
                 return { success: false, message: 'No Data found' }
             }

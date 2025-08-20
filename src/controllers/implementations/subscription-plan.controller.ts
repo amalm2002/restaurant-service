@@ -25,9 +25,9 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         private readonly _subscriptionService: ISubscriptionService
     ) { }
 
-    async addNewSubscriptionPlan(data: SubscriptionPlanDTO): Promise<SubscriptionPlanControllerResponseDTO> {
+    async addNewSubscriptionPlan(subscriptionPlanData: SubscriptionPlanDTO): Promise<SubscriptionPlanControllerResponseDTO> {
         try {
-            const response = await this._subscriptionService.addNewSubscriptionPlan(data);
+            const response = await this._subscriptionService.addNewSubscriptionPlan(subscriptionPlanData);
             return {
                 message: 'Subscription Plan Created Successfully',
                 data: response,
@@ -51,9 +51,9 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         }
     }
 
-    async editSubscriptionPlan(data: SubscriptionPlanDTO): Promise<EditSubscriptionPlanResponseDTO> {
+    async editSubscriptionPlan(updatedSubscriptionPlanData: SubscriptionPlanDTO): Promise<EditSubscriptionPlanResponseDTO> {
         try {
-            const response = await this._subscriptionService.editSubscriptionPlan(data);
+            const response = await this._subscriptionService.editSubscriptionPlan(updatedSubscriptionPlanData);
             return response;
         } catch (error) {
             console.log('Error in editSubscriptionPlan:', error);
@@ -61,9 +61,9 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         }
     }
 
-    async deleteSubscriptionPlan(data: DeleteSubscriptionPlanDTO): Promise<DeleteSubscriptionPlanResponseDTO> {
+    async deleteSubscriptionPlan(deleteSubscriptionPlanData: DeleteSubscriptionPlanDTO): Promise<DeleteSubscriptionPlanResponseDTO> {
         try {
-            const response = await this._subscriptionService.deleteSubscriptionPlan(data);
+            const response = await this._subscriptionService.deleteSubscriptionPlan(deleteSubscriptionPlanData);
             return response;
         } catch (error) {
             console.log('Error in deleteSubscriptionPlan:', error);
@@ -71,9 +71,10 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         }
     }
 
-    async getAnySubscriptionPlanExist(data: GetSubscriptionPlanExitDTO): Promise<GetSubscriptionPlanExitResponseDTO> {
+    async getAnySubscriptionPlanExist(subscriptionPlanExistQuery: GetSubscriptionPlanExitDTO): Promise<GetSubscriptionPlanExitResponseDTO> {
         try {
-            const restaurantId = typeof data.restaurantId === 'string' ? data.restaurantId : data.restaurantId.id;
+            const restaurantId = typeof subscriptionPlanExistQuery.restaurantId === 'string' ?
+                subscriptionPlanExistQuery.restaurantId : subscriptionPlanExistQuery.restaurantId.id;
             if (!restaurantId || typeof restaurantId !== 'string') {
                 throw new Error('Invalid restaurantId provided');
             }
@@ -85,9 +86,9 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         }
     }
 
-    async paymentSubscriptionPlan(data: PaymentDTO): Promise<PaymentResponseDTO> {
+    async paymentSubscriptionPlan(paymentData: PaymentDTO): Promise<PaymentResponseDTO> {
         try {
-            const response = await this._subscriptionService.paymentForSubscriptionPlan(data);
+            const response = await this._subscriptionService.paymentForSubscriptionPlan(paymentData);
             return response;
         } catch (error) {
             console.log('Error in paymentSubscriptionPlan:', error);
@@ -95,9 +96,9 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         }
     }
 
-    async verifyPaymentSubscriptionPlan(data: VerifyPaymentDTO): Promise<VerifyPaymentResponseDTO> {
+    async verifyPaymentSubscriptionPlan(verifyPaymentData: VerifyPaymentDTO): Promise<VerifyPaymentResponseDTO> {
         try {
-            const response = await this._subscriptionService.verifyPaymentSubscriptionPlan(data);
+            const response = await this._subscriptionService.verifyPaymentSubscriptionPlan(verifyPaymentData);
             return response;
         } catch (error) {
             console.log('Error in verifyPaymentSubscriptionPlan:', error);
@@ -105,9 +106,9 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         }
     }
 
-    async handleFailedPayment(data: FailedPaymentDTO): Promise<FailedPaymentResponseDTO> {
+    async handleFailedPayment(failedPaymentData: FailedPaymentDTO): Promise<FailedPaymentResponseDTO> {
         try {
-            const response = await this._subscriptionService.handleFailedPayment(data);
+            const response = await this._subscriptionService.handleFailedPayment(failedPaymentData);
             return response;
         } catch (error) {
             console.log('Error in handleFailedPayment:', error);
@@ -115,9 +116,9 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         }
     }
 
-    async retryPayment(data: RetryPaymentDTO): Promise<RetryPaymentResponseDTO> {
+    async retryPayment(retryPaymentData: RetryPaymentDTO): Promise<RetryPaymentResponseDTO> {
         try {
-            const response = await this._subscriptionService.retryPayment(data);
+            const response = await this._subscriptionService.retryPayment(retryPaymentData);
             return response;
         } catch (error) {
             console.log('Error in retryPayment:', error);
@@ -125,9 +126,9 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         }
     }
 
-    async getTheTransactionHistory(data: GetRestaurantDataByIdDTO): Promise<SubscriptionOrderResponseDTO[] | { error: boolean; message: string }> {
+    async getTheTransactionHistory(restaurantTransactionQuery: GetRestaurantDataByIdDTO): Promise<SubscriptionOrderResponseDTO[] | { error: boolean; message: string }> {
         try {
-            const response = await this._subscriptionService.getTheTransactionHistory(data);
+            const response = await this._subscriptionService.getTheTransactionHistory(restaurantTransactionQuery);
             return response;
         } catch (error) {
             console.log('Error in getTheTransactionHistory:', error);
@@ -135,9 +136,9 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         }
     }
 
-    async getTheTransactionDetails(data: TransactionDetailsDTO): Promise<SubscriptionOrderResponseDTO | { error: boolean; message: string }> {
+    async getTheTransactionDetails(transactionDetailsQuery: TransactionDetailsDTO): Promise<SubscriptionOrderResponseDTO | { error: boolean; message: string }> {
         try {
-            const response = await this._subscriptionService.getTheTransactionDetails(data);
+            const response = await this._subscriptionService.getTheTransactionDetails(transactionDetailsQuery);
             return response;
         } catch (error) {
             console.log('Error in getTheTransactionDetails:', error);
@@ -155,9 +156,9 @@ export default class SubscriptionPlanController implements ISubscriptionPlanCont
         }
     }
 
-    async getRestaurantChartData(data: GetRestaurantChartDataRequestDTO): Promise<GetRestaurantChartDataDTO> {
+    async getRestaurantChartData(chartRequest: GetRestaurantChartDataRequestDTO): Promise<GetRestaurantChartDataDTO> {
         try {
-            const response = await this._subscriptionService.getRestaurantChartData(data);
+            const response = await this._subscriptionService.getRestaurantChartData(chartRequest);
             return response;
         } catch (error) {
             console.log('Error in getRestaurantChartData:', error);

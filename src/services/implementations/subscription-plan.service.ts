@@ -37,8 +37,8 @@ export default class SubscriptionService implements ISubscriptionService {
         });
     }
 
-    async addNewSubscriptionPlan(data: SubscriptionPlanDTO): Promise<SubscriptionPlanResponseDTO> {
-        const { name, price, period, description, features, popular } = data;
+    async addNewSubscriptionPlan(subscriptionPlanData: SubscriptionPlanDTO): Promise<SubscriptionPlanResponseDTO> {
+        const { name, price, period, description, features, popular } = subscriptionPlanData;
 
         const cleanedPrice = price.toString().replace(/[^0-9.]/g, '');
         const priceNumber = Number(cleanedPrice);
@@ -73,8 +73,8 @@ export default class SubscriptionService implements ISubscriptionService {
         }
     }
 
-    async editSubscriptionPlan(data: SubscriptionPlanDTO): Promise<EditSubscriptionPlanResponseDTO> {
-        const { id, name, price, period, description, features, popular } = data;
+    async editSubscriptionPlan(updatedSubscriptionPlanData: SubscriptionPlanDTO): Promise<EditSubscriptionPlanResponseDTO> {
+        const { id, name, price, period, description, features, popular } = updatedSubscriptionPlanData;
 
         if (!id) {
             throw new Error('Subscription plan ID is required');
@@ -98,9 +98,9 @@ export default class SubscriptionService implements ISubscriptionService {
         };
     }
 
-    async deleteSubscriptionPlan(data: DeleteSubscriptionPlanDTO): Promise<DeleteSubscriptionPlanResponseDTO> {
+    async deleteSubscriptionPlan(deleteSubscriptionPlanData: DeleteSubscriptionPlanDTO): Promise<DeleteSubscriptionPlanResponseDTO> {
         try {
-            const deletedPlan = await this._subscriptionPlanRepository.deleteSubscriptionPlan(data);
+            const deletedPlan = await this._subscriptionPlanRepository.deleteSubscriptionPlan(deleteSubscriptionPlanData);
             return {
                 message: deletedPlan ? 'success' : 'not found',
                 response: deletedPlan,
@@ -111,21 +111,21 @@ export default class SubscriptionService implements ISubscriptionService {
         }
     }
 
-    async getAnySubscriptionPlanExist(data: GetSubscriptionPlanExitDTO): Promise<GetSubscriptionPlanExitResponseDTO> {
+    async getAnySubscriptionPlanExist(subscriptionPlanExistQuery: GetSubscriptionPlanExitDTO): Promise<GetSubscriptionPlanExitResponseDTO> {
         try {
-            if (!data.restaurantId || typeof data.restaurantId !== 'string') {
+            if (!subscriptionPlanExistQuery.restaurantId || typeof subscriptionPlanExistQuery.restaurantId !== 'string') {
                 throw new Error('Invalid restaurantId provided');
             }
-            return await this._transactionRepository.findExistPlan({ id: data.restaurantId });
+            return await this._transactionRepository.findExistPlan({ id: subscriptionPlanExistQuery.restaurantId });
         } catch (error) {
             console.log('Error in getAnySubscriptionPlanExist:', error);
             throw new Error((error as Error).message);
         }
     }
 
-    async paymentForSubscriptionPlan(data: PaymentDTO): Promise<PaymentResponseDTO> {
+    async paymentForSubscriptionPlan(paymentData: PaymentDTO): Promise<PaymentResponseDTO> {
         try {
-            const { amount, planId, restaurantId, isRetry = false } = data;
+            const { amount, planId, restaurantId, isRetry = false } = paymentData;
             const razorpayKey = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY_ID;
             if (!razorpayKey) {
                 throw new Error('Razorpay key ID is missing');
@@ -188,9 +188,9 @@ export default class SubscriptionService implements ISubscriptionService {
         }
     }
 
-    async verifyPaymentSubscriptionPlan(data: VerifyPaymentDTO): Promise<VerifyPaymentResponseDTO> {
+    async verifyPaymentSubscriptionPlan(verifyPaymentData: VerifyPaymentDTO): Promise<VerifyPaymentResponseDTO> {
         try {
-            const { razorpay_order_id, razorpay_payment_id, razorpay_signature, planId, restaurantId } = data;
+            const { razorpay_order_id, razorpay_payment_id, razorpay_signature, planId, restaurantId } = verifyPaymentData;
             const razorData = razorpay_order_id + '|' + razorpay_payment_id;
             const expectedSignature = crypto
                 .createHmac('sha256', process.env.RAZORPAY_SECRET_ID || process.env.VITE_RAZORPAY_SECRET_ID || '')
@@ -241,9 +241,9 @@ export default class SubscriptionService implements ISubscriptionService {
         }
     }
 
-    async handleFailedPayment(data: FailedPaymentDTO): Promise<FailedPaymentResponseDTO> {
+    async handleFailedPayment(failedPaymentData: FailedPaymentDTO): Promise<FailedPaymentResponseDTO> {
         try {
-            const { razorpay_order_id, razorpay_payment_id, error_code, error_description, restaurantId, planId } = data;
+            const { razorpay_order_id, razorpay_payment_id, error_code, error_description, restaurantId, planId } = failedPaymentData;
             const payment = await this._transactionRepository.updateFailedPayment({
                 razorpay_order_id,
                 razorpay_payment_id,
@@ -266,9 +266,9 @@ export default class SubscriptionService implements ISubscriptionService {
         }
     }
 
-    async retryPayment(data: RetryPaymentDTO): Promise<RetryPaymentResponseDTO> {
+    async retryPayment(retryPaymentData: RetryPaymentDTO): Promise<RetryPaymentResponseDTO> {
         try {
-            const payment = await this._transactionRepository.findPaymentById(data.paymentId);
+            const payment = await this._transactionRepository.findPaymentById(retryPaymentData.paymentId);
             if (!payment) {
                 throw new Error('Payment record not found');
             }
@@ -293,7 +293,7 @@ export default class SubscriptionService implements ISubscriptionService {
             });
 
             await this._transactionRepository.updatePaymentOrderId({
-                paymentId: data.paymentId,
+                paymentId: retryPaymentData.paymentId,
                 razorpayOrderId: orderData.orderId,
             });
 
@@ -310,9 +310,9 @@ export default class SubscriptionService implements ISubscriptionService {
         }
     }
 
-    async getTheTransactionHistory(data: GetRestaurantDataByIdDTO): Promise<SubscriptionOrderResponseDTO[]> {
+    async getTheTransactionHistory(restaurantTransactionQuery: GetRestaurantDataByIdDTO): Promise<SubscriptionOrderResponseDTO[]> {
         try {
-            const { restaurantId } = data
+            const { restaurantId } = restaurantTransactionQuery
             const response = await this._transactionRepository.getTransactionHistory(restaurantId);
             return response;
         } catch (error) {
@@ -321,9 +321,9 @@ export default class SubscriptionService implements ISubscriptionService {
         }
     }
 
-    async getTheTransactionDetails(data: TransactionDetailsDTO): Promise<SubscriptionOrderResponseDTO> {
+    async getTheTransactionDetails(transactionDetailsQuery: TransactionDetailsDTO): Promise<SubscriptionOrderResponseDTO> {
         try {
-            const transaction = await this._transactionRepository.getTheTransactionDetails(data.transactionId);
+            const transaction = await this._transactionRepository.getTheTransactionDetails(transactionDetailsQuery.transactionId);
             return transaction;
         } catch (error) {
             console.log('Error in getTheTransactionDetails:', error);
@@ -344,16 +344,16 @@ export default class SubscriptionService implements ISubscriptionService {
         }
     }
 
-    async getRestaurantChartData(data: GetRestaurantChartDataRequestDTO): Promise<GetRestaurantChartDataDTO> {
+    async getRestaurantChartData(chartRequest: GetRestaurantChartDataRequestDTO): Promise<GetRestaurantChartDataDTO> {
         try {
             const query: any = {};
-            if (data.startDate && data.endDate) {
-                query.createdAt = { $gte: new Date(data.startDate), $lte: new Date(data.endDate) };
+            if (chartRequest.startDate && chartRequest.endDate) {
+                query.createdAt = { $gte: new Date(chartRequest.startDate), $lte: new Date(chartRequest.endDate) };
             }
             const payments = await this._transactionRepository.getRestaurantChartData(query, {
-                sortBy: data.sortBy,
-                order: data.order,
-                limit: data.limit,
+                sortBy: chartRequest.sortBy,
+                order: chartRequest.order,
+                limit: chartRequest.limit,
             });
             return {
                 message: 'success',

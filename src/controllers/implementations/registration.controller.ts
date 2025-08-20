@@ -28,8 +28,8 @@ export default class RegistrationController implements IRegistrationController {
         private readonly _otpService: IOtpService
     ) { }
 
-    async register(data: RegistrationDTO): Promise<RestaurantRegistrationResponseDTO> {
-        const { restaurantName, email, mobile, otp, otpToken } = data;
+    async register(registrationDetails: RegistrationDTO): Promise<RestaurantRegistrationResponseDTO> {
+        const { restaurantName, email, mobile, otp, otpToken } = registrationDetails;
 
         if (!otp || !otpToken) {
             return { error: 'OTP and OTP Token are required.' };
@@ -58,10 +58,10 @@ export default class RegistrationController implements IRegistrationController {
         }
     }
 
-    async checkRestaurant(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
+    async checkRestaurant(checkRequest: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
         try {
-            const { email } = data;
-            const response = await this._registrationService.checkRestaurant(data);
+            const { email } = checkRequest;
+            const response = await this._registrationService.checkRestaurant(checkRequest);
             if (response.message === 'restaurant not registered') {
                 const token = await OtpSendingUtil.sendOtp(
                     email,
@@ -78,10 +78,10 @@ export default class RegistrationController implements IRegistrationController {
         }
     }
 
-    async restaurantResendOtp(data: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
+    async restaurantResendOtp(resendOtpRequest: RegistrationCheckDTO): Promise<RegistrationCheckResponseDTO> {
         try {
-            const { email } = data
-            const response = await this._registrationService.restaurantResendOtp(data);
+            const { email } = resendOtpRequest
+            const response = await this._registrationService.restaurantResendOtp(resendOtpRequest);
             const token = await OtpSendingUtil.sendOtp(
                 email,
                 this._nodemailerService,
@@ -94,27 +94,27 @@ export default class RegistrationController implements IRegistrationController {
         }
     }
 
-    async restaurantDocumentUpdate(data: DocumentsDTO): Promise<DocumentsUpdateResponseDTO> {
+    async restaurantDocumentUpdate(documentUpdate: DocumentsDTO): Promise<DocumentsUpdateResponseDTO> {
         try {
-            const response = await this._registrationService.restaurantDocumentUpdate(data);
+            const response = await this._registrationService.restaurantDocumentUpdate(documentUpdate);
             return response;
         } catch (error) {
             return { error: (error as Error).message };
         }
     }
 
-    async restaurantLocation(data: LocationDTO): Promise<LocationUpdateResponseDTO> {
+    async restaurantLocation(locationUpdate: LocationDTO): Promise<LocationUpdateResponseDTO> {
         try {
-            const response = await this._registrationService.restaurantLocation(data);
+            const response = await this._registrationService.restaurantLocation(locationUpdate);
             return response;
         } catch (error) {
             return { error: (error as Error).message };
         }
     }
 
-    async resubmitRestaurantDocuments(data: ResubDocsDTO): Promise<ResubDocsResponseDTO> {
+    async resubmitRestaurantDocuments(resubmissionRequest: ResubDocsDTO): Promise<ResubDocsResponseDTO> {
         try {
-            const response = await this._registrationService.resubmitDocuments(data);
+            const response = await this._registrationService.resubmitDocuments(resubmissionRequest);
             return response;
         } catch (error) {
             return { error: (error as Error).message };

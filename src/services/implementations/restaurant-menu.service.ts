@@ -21,9 +21,9 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
         private readonly _menuRepository: IMenuRepository
     ) { }
 
-    async addMenuItem(data: MenuItemDTO): Promise<MenuItemResponseDTO> {
+    async addMenuItem(newMenuItem: MenuItemDTO): Promise<MenuItemResponseDTO> {
         try {
-            return await this._menuRepository.createMenuItem(data);
+            return await this._menuRepository.createMenuItem(newMenuItem);
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -53,9 +53,9 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
         }
     }
 
-    async editMenuItems(data: MenuItemDTO): Promise<MenuItemResponseDTO> {
+    async editMenuItems(updatedMenuItem: MenuItemDTO): Promise<MenuItemResponseDTO> {
         try {
-            return await this._menuRepository.editMenuItems(data);
+            return await this._menuRepository.editMenuItems(updatedMenuItem);
         } catch (error) {
             throw new Error((error as Error).message);
         }
@@ -77,41 +77,41 @@ export default class RestaurantMenuService implements IRestaurantMenuService {
         }
     }
 
-    async sortAllMenus(params: SortMenuDTO): Promise<SortedMenuItemResponseDTO[]> {
+    async sortAllMenus(sortOptions: SortMenuDTO): Promise<SortedMenuItemResponseDTO[]> {
         try {
-            return await this._menuRepository.sortAllMenu(params);
+            return await this._menuRepository.sortAllMenu(sortOptions);
         } catch (error) {
             throw new Error((error as Error).message);
         }
     }
 
-    async updateMenuQuantity(data: UpdateMenuQuantityDTO): Promise<UpdateMenuQuantityResponseDTO> {
+    async updateMenuQuantity(quantityUpdate: UpdateMenuQuantityDTO): Promise<UpdateMenuQuantityResponseDTO> {
         try {
-            return await this._menuRepository.updateMenuQuantity(data)
+            return await this._menuRepository.updateMenuQuantity(quantityUpdate)
         } catch (error) {
             throw new Error((error as Error).message);
         }
     }
 
-    async cancelOrderQuantityUpdations(refundData: CancelOrderQuantityUpdationDTO): Promise<CancelOrderQuantityUpdationResponseDTO> {
+    async cancelOrderQuantityUpdations(cancelUpdate: CancelOrderQuantityUpdationDTO): Promise<CancelOrderQuantityUpdationResponseDTO> {
         try {
-            return await this._menuRepository.cancelOrderQuantityUpdations(refundData)
+            return await this._menuRepository.cancelOrderQuantityUpdations(cancelUpdate)
         } catch (error) {
             throw new Error((error as Error).message);
         }
     }
 
-    async checkStockAvailability(data: any): Promise<CheckStockAvailabilityResponseDTO> {
+    async checkStockAvailability(stockCheck: any): Promise<CheckStockAvailabilityResponseDTO> {
         try {
-            return await this._menuRepository.checkStockAvailability(data)
+            return await this._menuRepository.checkStockAvailability(stockCheck)
         } catch (error) {
             throw new Error((error as Error).message);
         }
     }
 
-    async decrementStock(data: DecrementStockDTO): Promise<DecrementStockResponseDTO> {
+    async decrementStock(stockDecrement: DecrementStockDTO): Promise<DecrementStockResponseDTO> {
         try {
-            return await this._menuRepository.decrementStock(data)
+            return await this._menuRepository.decrementStock(stockDecrement)
         } catch (error) {
             throw new Error((error as Error).message);
         }
