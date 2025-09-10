@@ -5,7 +5,6 @@ services:
     ports:
       - "3004:3004"
     env_file:
-      - .env
       - .env.docker
     networks:
       - backend
